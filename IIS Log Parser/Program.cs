@@ -94,7 +94,7 @@ namespace returnzork.IIS_Log_Parser
 
                             foreach(var li in temp)
                             {
-                                logs.Concat(li);
+                                logs.AddRange(li);
                             }
 
                             display = new LogDisplay(logs);
