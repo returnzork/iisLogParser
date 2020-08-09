@@ -43,5 +43,14 @@ namespace returnzork.IIS_Log_Parser
             this.WindowsStatus = args[13];
             this.TimeTaken = new TimeSpan(0, 0, 0, 0, int.Parse(args[14]));
         }
+
+        public override string ToString()
+        {
+            string output = "";
+
+            output += Time + " " + HTTPVerb + " " + HTTPStatus + " " + Uri;
+
+            return output;
+        }
     }
 }
