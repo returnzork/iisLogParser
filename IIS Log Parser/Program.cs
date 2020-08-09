@@ -40,11 +40,14 @@ namespace returnzork.IIS_Log_Parser
             {
                 Console.WriteLine("0 - Load another log file");
                 Console.WriteLine("1 - Show items by client ip address");
+                Console.WriteLine("10 - Show items by multiple client ip address");
+                Console.WriteLine("100 - Show items not matching client ip address");
+                Console.WriteLine("1000 - Show items not maching multiple client ip address");
                 Console.WriteLine("2 - Show items by HTTP verb");
                 Console.WriteLine("3 - Match by status code");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || result > 3)
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 3 && result != 10 && result != 100 && result != 1000))
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -73,6 +76,17 @@ namespace returnzork.IIS_Log_Parser
                     case 1:
                         display.ShowByClientIp();
                         break;
+                    case 10:
+                        display.ShowByMultipleClientIp();
+                        break;
+                    case 100:
+                        display.ShowByNotClientIp();
+                        break;
+                    case 1000:
+                        display.ShowByMultipleNotClientIp();
+                        break;
+
+
                     case 2:
                         display.ShowByHTTPVerb();
                         break;

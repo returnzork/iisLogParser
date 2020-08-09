@@ -24,6 +24,69 @@ namespace returnzork.IIS_Log_Parser
             Display(logs.Where(x => x.ClientIpAddr == ip));
         }
 
+        internal void ShowByNotClientIp()
+        {
+            Console.WriteLine("Enter IP to negate its lookup:");
+            string ip = Console.ReadLine();
+            Display(logs.Where(x => x.ClientIpAddr != ip));
+        }
+
+        internal void ShowByMultipleClientIp()
+        {
+            Console.WriteLine("Enter an [ip, array] of ip address to match: (ex [127.0.0.1, 127.0.0.2])");
+            string arr = Console.ReadLine();
+
+            //check format, must start with [ end with ] and contain a , delimiter
+            if (arr[0] != '[' && arr[arr.Length - 1] != ']' || !arr.Contains(','))
+            {
+                Console.WriteLine("Invalid format");
+                return;
+            }
+
+            //remove the start and end bracked
+            arr = arr.Substring(1, arr.Length - 2);
+            //get each ip item
+            string[] split = arr.Split(',');
+            //remove spaces from split
+            for(int i = 0; i < split.Length; i++)
+            {
+                split[i] = split[i].Replace(" ", "");
+            }
+
+
+            //TODO maybe make sure ip address is valid?
+
+            Display(logs.Where(x => split.Contains(x.ClientIpAddr)));
+        }
+
+        internal void ShowByMultipleNotClientIp()
+        {
+            Console.WriteLine("Enter an [ip, array] of ip address to negative match: (ex [127.0.0.1, 127.0.0.2])");
+            string arr = Console.ReadLine();
+
+            //check format, must start with [ end with ] and contain a , delimiter
+            if (arr[0] != '[' && arr[arr.Length - 1] != ']' || !arr.Contains(','))
+            {
+                Console.WriteLine("Invalid format");
+                return;
+            }
+
+            //remove the start and end bracked
+            arr = arr.Substring(1, arr.Length - 2);
+            //get each ip item
+            string[] split = arr.Split(',');
+            //remove spaces from split
+            for (int i = 0; i < split.Length; i++)
+            {
+                split[i] = split[i].Replace(" ", "");
+            }
+
+
+            //TODO maybe make sure ip address is valid?
+
+            Display(logs.Where(x => !split.Contains(x.ClientIpAddr)));
+        }
+
         internal void ShowByHTTPVerb()
         {
             Console.WriteLine("Enter HTTP Verb to match:");
