@@ -108,6 +108,8 @@ namespace returnzork.IIS_Log_Parser
 
         private void Display(IEnumerable<LogItem> results)
         {
+            Console.WriteLine();
+
             if (results.Any())
             {
                 foreach (var x in results)
@@ -119,6 +121,8 @@ namespace returnzork.IIS_Log_Parser
             {
                 Console.WriteLine("No matches");
             }
+
+            Console.WriteLine();
         }
     }
 }
