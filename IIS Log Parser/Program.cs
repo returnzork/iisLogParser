@@ -38,7 +38,8 @@ namespace returnzork.IIS_Log_Parser
             LogDisplay display = new LogDisplay(logs);
             do
             {
-                Console.WriteLine("0 - Load another log file");
+                Console.WriteLine("0 - Load a log file to what is already loaded");
+                Console.WriteLine("5 - Load folder of log files, removing what is already loaded");
                 Console.WriteLine("1 - Show items by client ip address");
                 Console.WriteLine("10 - Show items by multiple client ip address");
                 Console.WriteLine("100 - Show items not matching client ip address");
@@ -47,7 +48,7 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine("3 - Match by status code");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 3 && result != 10 && result != 100 && result != 1000))
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 3 && result != 5 && result != 10 && result != 100 && result != 1000))
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -69,6 +70,23 @@ namespace returnzork.IIS_Log_Parser
                         else
                         {
                             logs.AddRange(ParseLines(ReadFile(newFile)));
+                            display = new LogDisplay(logs);
+                        }
+                        break;
+                    case 5:
+                        Console.WriteLine("Enter folder to load from");
+                        string dir = Console.ReadLine();
+                        if(!Directory.Exists(dir))
+                        {
+                            Console.WriteLine("Directory does not exist");
+                        }
+                        else
+                        {
+                            logs = new List<LogItem>();
+                            foreach(string file in Directory.GetFiles(dir))
+                            {
+                                logs.AddRange(ParseLines(ReadFile(file)));
+                            }
                             display = new LogDisplay(logs);
                         }
                         break;
