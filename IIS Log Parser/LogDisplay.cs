@@ -21,36 +21,14 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter ip address to match:");
             string ip = Console.ReadLine();
-            var clientIp = logs.Where(x => x.ClientIpAddr == ip);
-            if (clientIp.Any())
-            {
-                foreach (var x in clientIp)
-                {
-                    Console.WriteLine(x);
-                }
-            }
-            else
-            {
-                Console.WriteLine("No matching ip address");
-            }
+            Display(logs.Where(x => x.ClientIpAddr == ip));
         }
 
         internal void ShowByHTTPVerb()
         {
             Console.WriteLine("Enter HTTP Verb to match:");
             string verb = Console.ReadLine().ToLower();
-            var matches = logs.Where(x => x.HTTPVerb.ToLower() == verb);
-            if(matches.Any())
-            {
-                foreach(var x in matches)
-                {
-                    Console.WriteLine(x);
-                }
-            }
-            else
-            {
-                Console.WriteLine("No matching verbs");
-            }
+            Display(logs.Where(x => x.HTTPVerb.ToLower() == verb));
         }
 
         internal void ShowByStatusCode()
@@ -61,10 +39,15 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine("Invalid code");
                 return;
             }
-            var matches = logs.Where(x => x.HTTPStatus == code);
-            if(matches.Any())
+            Display(logs.Where(x => x.HTTPStatus == code));
+        }
+
+
+        private void Display(IEnumerable<LogItem> results)
+        {
+            if (results.Any())
             {
-                foreach(var x in matches)
+                foreach (var x in results)
                 {
                     Console.WriteLine(x);
                 }
