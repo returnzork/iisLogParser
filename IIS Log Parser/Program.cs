@@ -34,6 +34,9 @@ namespace returnzork.IIS_Log_Parser
             {
                 while(!sr.EndOfStream)
                 {
+                    string l = sr.ReadLine();
+                    if (l.StartsWith('#'))
+                        continue;
                     lines.Add(sr.ReadLine());
                 }
             }
