@@ -35,12 +35,15 @@ namespace returnzork.IIS_Log_Parser
         static void Prompt(List<LogItem> logs)
         {
             bool shouldExit = false;
+            LogDisplay display = new LogDisplay(logs);
             do
             {
                 Console.WriteLine("1 - Show items by client ip address");
+                Console.WriteLine("2 - Show items by HTTP verb");
+                Console.WriteLine("3 - Match by status code");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || result == 0 || result > 1)
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || result == 0 || result > 3)
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -53,20 +56,13 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
                     case 1:
-                        Console.WriteLine("Enter ip address to match:");
-                        string ip = Console.ReadLine();
-                        var clientIp = logs.Where(x => x.ClientIpAddr == ip);
-                        if(clientIp.Any())
-                        {
-                            foreach(var x in clientIp)
-                            {
-                                Console.WriteLine(x);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("No matching ip address");
-                        }
+                        display.ShowByClientIp();
+                        break;
+                    case 2:
+                        display.ShowByHTTPVerb();
+                        break;
+                    case 3:
+                        display.ShowByStatusCode();
                         break;
                 }
             }
