@@ -129,6 +129,9 @@ namespace returnzork.IIS_Log_Parser
                         {
                             using (StreamReader sr = new StreamReader(file))
                             {
+                                //cast the list to an array so we can use a parallel for loop
+                                var logArray = logs.ToArray();
+
                                 while(!sr.EndOfStream)
                                 {
                                     string line = sr.ReadLine();
@@ -141,13 +144,15 @@ namespace returnzork.IIS_Log_Parser
                                     }
                                     else
                                     {
-                                        for (int i = logs.Count - 1; i >= 0; i--)
+                                        System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                                         {
-                                            if (res.Contains(logs[i].ClientIpAddr))
-                                                logs.RemoveAt(i);
-                                        }
+                                            if (res.Contains(logArray[i].ClientIpAddr))
+                                                logArray[i] = default;
+                                        });
                                     }
                                 }
+
+                                logs = logArray.Where(x => x.IsValid).ToList();
                             }
                         }
                         break;

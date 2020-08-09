@@ -6,6 +6,9 @@ namespace returnzork.IIS_Log_Parser
 {
     internal struct LogItem
     {
+        internal bool IsValid { get; private set; }
+
+
         internal DateTime Time { get; set; }
         internal string ServerIpAddr { get; set; }
         internal string HTTPVerb { get; set; }
@@ -42,6 +45,8 @@ namespace returnzork.IIS_Log_Parser
             this.HTTPSubStatus = int.Parse(args[12]);
             this.WindowsStatus = args[13];
             this.TimeTaken = new TimeSpan(0, 0, 0, 0, int.Parse(args[14]));
+
+            IsValid = true;
         }
 
         public override string ToString()
