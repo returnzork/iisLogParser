@@ -46,9 +46,10 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine("1000 - Show items not maching multiple client ip address");
                 Console.WriteLine("2 - Show items by HTTP verb");
                 Console.WriteLine("3 - Match by status code");
+                Console.WriteLine("4 - Add global ignore");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 3 && result != 5 && result != 10 && result != 100 && result != 1000))
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000))
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -96,6 +97,24 @@ namespace returnzork.IIS_Log_Parser
                             }
 
                             display = new LogDisplay(logs);
+                        }
+                        break;
+
+                    case 4:
+                        //global ignore
+                        Console.WriteLine("Enter [ip, address] to ignore (MINIMUM 2 ENTRIES):");
+                        string arr = Console.ReadLine();
+                        if(!Helper.IpSplit(arr, out string[] split))
+                        {
+                            Console.WriteLine("Invalid format");
+                        }
+                        else
+                        {
+                            for(int i = logs.Count - 1; i >= 0; i--)
+                            {
+                                if (split.Contains(logs[i].ClientIpAddr))
+                                    logs.RemoveAt(i);
+                            }
                         }
                         break;
 
