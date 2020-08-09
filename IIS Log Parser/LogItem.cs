@@ -48,7 +48,7 @@ namespace returnzork.IIS_Log_Parser
         {
             string output = "";
 
-            output += Time + " " + HTTPVerb + " " + HTTPStatus + " " + Uri;
+            output += Time + " " + ClientIpAddr + " " + HTTPVerb + " " + HTTPStatus + " " + Uri;
 
             return output;
         }
