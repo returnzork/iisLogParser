@@ -47,9 +47,10 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine("2 - Show items by HTTP verb");
                 Console.WriteLine("3 - Match by status code");
                 Console.WriteLine("4 - Add global ignore");
+                Console.WriteLine("44 - Load global ignore file");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000))
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44))
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -117,6 +118,40 @@ namespace returnzork.IIS_Log_Parser
                             }
                         }
                         break;
+                    case 44:
+                        Console.WriteLine("Enter file containing [ip, address] to ignore:");
+                        string file = Console.ReadLine();
+                        if(!File.Exists(file))
+                        {
+                            Console.WriteLine("File does not exist");
+                        }
+                        else
+                        {
+                            using (StreamReader sr = new StreamReader(file))
+                            {
+                                while(!sr.EndOfStream)
+                                {
+                                    string line = sr.ReadLine();
+                                    if (string.IsNullOrEmpty(line))
+                                        continue;
+
+                                    if(!Helper.IpSplit(line, out string[] res))
+                                    {
+                                        Console.WriteLine("Invalid format");
+                                    }
+                                    else
+                                    {
+                                        for (int i = logs.Count - 1; i >= 0; i--)
+                                        {
+                                            if (res.Contains(logs[i].ClientIpAddr))
+                                                logs.RemoveAt(i);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                        
 
                     case 1:
                         display.ShowByClientIp();

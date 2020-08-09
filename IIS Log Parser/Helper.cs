@@ -6,6 +6,11 @@ namespace returnzork.IIS_Log_Parser
     {
         internal static bool IpSplit(string arr, out string[] result)
         {
+            if(string.IsNullOrEmpty(arr))
+            {
+                result = null;
+                return false;
+            }
             //check format, must start with [ end with ] and contain a , delimiter
             if (arr[0] != '[' && arr[arr.Length - 1] != ']' || !arr.Contains(','))
             {
