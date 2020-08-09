@@ -82,12 +82,24 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
+                            var sw = System.Diagnostics.Stopwatch.StartNew();
                             logs = new List<LogItem>();
-                            foreach(string file in Directory.GetFiles(dir))
+                            string[] allLogFiles = Directory.GetFiles(dir);
+                            List<LogItem>[] temp = new List<LogItem>[allLogFiles.Length];
+                            System.Threading.Tasks.Parallel.For(0, allLogFiles.Length, (i) =>
                             {
-                                logs.AddRange(ParseLines(ReadFile(file)));
+                                temp[i] = ParseLines(ReadFile(allLogFiles[i]));
+                            });
+
+
+                            foreach(var li in temp)
+                            {
+                                logs.Concat(li);
                             }
+
                             display = new LogDisplay(logs);
+                            sw.Stop();
+                            Console.WriteLine("Took: " + sw.ElapsedMilliseconds);
                         }
                         break;
 
