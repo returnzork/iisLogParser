@@ -38,12 +38,13 @@ namespace returnzork.IIS_Log_Parser
             LogDisplay display = new LogDisplay(logs);
             do
             {
+                Console.WriteLine("0 - Load another log file");
                 Console.WriteLine("1 - Show items by client ip address");
                 Console.WriteLine("2 - Show items by HTTP verb");
                 Console.WriteLine("3 - Match by status code");
                 Console.WriteLine("-1 - Exit Program");
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || result == 0 || result > 3)
+                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || result > 3)
                 {
                     Console.WriteLine("Invalid entry");
                     continue;
@@ -53,6 +54,20 @@ namespace returnzork.IIS_Log_Parser
                 {
                     case -1:
                         shouldExit = true;
+                        break;
+
+                    case 0:
+                        Console.WriteLine("Enter new log file to add");
+                        string newFile = Console.ReadLine();
+                        if(!File.Exists(newFile))
+                        {
+                            Console.WriteLine("File does not exist");
+                        }
+                        else
+                        {
+                            logs.AddRange(ParseLines(ReadFile(newFile)));
+                            display = new LogDisplay(logs);
+                        }
                         break;
 
                     case 1:
