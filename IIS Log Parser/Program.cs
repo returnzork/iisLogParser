@@ -153,6 +153,7 @@ namespace returnzork.IIS_Log_Parser
                                 }
 
                                 logs = logArray.Where(x => x.IsValid).ToList();
+                                display = new LogDisplay(logs);
                             }
                         }
                         break;
