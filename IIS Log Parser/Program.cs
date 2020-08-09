@@ -25,6 +25,20 @@ namespace returnzork.IIS_Log_Parser
         {
             var lines = ReadFile(file);
             Console.WriteLine($"There were a total of {lines.Count} log entries");
+            ParseLines(lines);
+        }
+
+        static void ParseLines(List<string> lines)
+        {
+            //format is
+            //#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken
+            //space delimiters
+
+            foreach(string item in lines)
+            {
+                string[] split = item.Split(' ');
+                LogItem li = new LogItem(split);
+            }
         }
 
         static List<string> ReadFile(string file)
@@ -37,7 +51,7 @@ namespace returnzork.IIS_Log_Parser
                     string l = sr.ReadLine();
                     if (l.StartsWith('#'))
                         continue;
-                    lines.Add(sr.ReadLine());
+                    lines.Add(l);
                 }
             }
 
