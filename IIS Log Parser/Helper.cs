@@ -4,6 +4,12 @@ namespace returnzork.IIS_Log_Parser
 {
     static class Helper
     {
+        /// <summary>
+        /// Split an IP Address array
+        /// </summary>
+        /// <param name="arr">array of ip address to split</param>
+        /// <param name="result">Output of ip address</param>
+        /// <returns>True if successfully split</returns>
         internal static bool IpSplit(string arr, out string[] result)
         {
             if(string.IsNullOrEmpty(arr))
