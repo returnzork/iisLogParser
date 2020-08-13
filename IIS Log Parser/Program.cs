@@ -203,14 +203,17 @@ namespace returnzork.IIS_Log_Parser
         static List<string> ReadFile(string file)
         {
             List<string> lines = new List<string>();
-            using (StreamReader sr = new StreamReader(file))
+            using (FileStream openedFile = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                while(!sr.EndOfStream)
+                using (StreamReader sr = new StreamReader(openedFile))
                 {
-                    string l = sr.ReadLine();
-                    if (l.StartsWith('#'))
-                        continue;
-                    lines.Add(l);
+                    while (!sr.EndOfStream)
+                    {
+                        string l = sr.ReadLine();
+                        if (l.StartsWith('#'))
+                            continue;
+                        lines.Add(l);
+                    }
                 }
             }
 
