@@ -129,13 +129,13 @@ namespace returnzork.IIS_Log_Parser
                                     {
                                         System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                                         {
-                                            if (res.Contains(logArray[i].ClientIpAddr))
+                                            if (res.Contains(logArray[i]?.ClientIpAddr))
                                                 logArray[i] = default;
                                         });
                                     }
                                 }
 
-                                logs = logArray.Where(x => x.IsValid).ToList();
+                                logs = logArray.Where(x => x != null && x.IsValid).ToList();
                                 display = new LogDisplay(logs);
                             }
                         }
