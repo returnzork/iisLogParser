@@ -4,70 +4,70 @@ using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal struct LogItem
+    internal struct LogItem : ILogItem
     {
         /// <summary>
         /// Was this LogItem loaded successfully?
         /// </summary>
-        internal bool IsValid { get; private set; }
+        public bool IsValid { get; private set; }
 
 
         /// <summary>
         /// Time that this log occurred (UTC Time)
         /// </summary>
-        internal DateTime Time { get; set; }
+        public DateTime Time { get; set; }
         /// <summary>
         /// IP Address of the server handling this log item
         /// </summary>
-        internal string ServerIpAddr { get; set; }
+        public string ServerIpAddr { get; set; }
         /// <summary>
         /// Verb used to access server
         /// </summary>
-        internal string HTTPVerb { get; set; }
+        public string HTTPVerb { get; set; }
         /// <summary>
         /// Uri accessed on server
         /// </summary>
-        internal string Uri { get; set; }
+        public string Uri { get; set; }
         /// <summary>
         /// ?
         /// </summary>
-        internal string Query { get; set; }
+        public string Query { get; set; }
         /// <summary>
         /// Port access on server
         /// </summary>
-        internal int Port { get; set; }
+        public int Port { get; set; }
         /// <summary>
         /// Username (if set) used to access server
         /// </summary>
-        internal string Username { get; set; }
+        public string Username { get; set; }
         /// <summary>
         /// Client IP address
         /// </summary>
-        internal string ClientIpAddr { get; set; }
+        public string ClientIpAddr { get; set; }
         /// <summary>
         /// User agent sent when connecting to server
         /// </summary>
-        internal string UserAgent { get; set; }
+        public string UserAgent { get; set; }
         /// <summary>
         /// Uri set as Referer
         /// </summary>
-        internal string Referer { get; set; }
+        public string Referer { get; set; }
         /// <summary>
         /// HTTP Status code sent to client
         /// </summary>
-        internal int HTTPStatus { get; set; }
+        public int HTTPStatus { get; set; }
         /// <summary>
         /// HTTP Sub Status code sent to client
         /// </summary>
-        internal int HTTPSubStatus { get; set; }
+        public int HTTPSubStatus { get; set; }
         /// <summary>
         /// Windows status code
         /// </summary>
-        internal string WindowsStatus { get; set; }
+        public string WindowsStatus { get; set; }
         /// <summary>
         /// Time that the server spent processing this item
         /// </summary>
-        internal TimeSpan TimeTaken { get; set; }
+        public TimeSpan TimeTaken { get; set; }
 
         /// <summary>
         /// Create a new LogItem

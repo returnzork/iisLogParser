@@ -1,4 +1,5 @@
-﻿using System;
+﻿using returnzork.IIS_Log_Parser;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -9,7 +10,7 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
     {
         static Type logItemType;
 
-        internal static object GetGenericLog(string clientIp, string verb)
+        internal static ILogItem GetGenericLog(string clientIp, string verb)
         {
             if(logItemType == null)
                 logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
@@ -33,7 +34,7 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
 
             ConstructorInfo ctor = logItemType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(string[]) }, null);
             object instance = ctor.Invoke(new object[] { new string[] { $"{Time.Year}-{Time.Month}-{Time.Day}", $"{Time.Hour}:{Time.Minute}:{Time.Second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, ClientIpAddr, UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() } });
-            return instance;
+            return (ILogItem)instance;
         }
     }
 }
