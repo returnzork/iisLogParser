@@ -46,31 +46,18 @@ namespace returnzork.IIS_Log_Parser
             LogDisplay display = new LogDisplay(logs);
             do
             {
-                Console.WriteLine("0 - Load a log file to what is already loaded");
-                Console.WriteLine("5 - Load folder of log files, removing what is already loaded");
-                Console.WriteLine("1 - Show items by client ip address");
-                Console.WriteLine("10 - Show items by multiple client ip address");
-                Console.WriteLine("100 - Show items not matching client ip address");
-                Console.WriteLine("1000 - Show items not maching multiple client ip address");
-                Console.WriteLine("2 - Show items by HTTP verb");
-                Console.WriteLine("3 - Match by status code");
-                Console.WriteLine("4 - Add global ignore");
-                Console.WriteLine("44 - Load global ignore file");
-                Console.WriteLine("-1 - Exit Program");
+                Menu.DisplayMenu();
+                MenuEntry entry = Menu.GetMenuEntry();
 
-                if(!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44))
-                {
-                    Console.WriteLine("Invalid entry");
-                    continue;
-                }
 
-                switch(result)
+
+                switch(entry)
                 {
-                    case -1:
+                    case MenuEntry.Exit:
                         shouldExit = true;
                         break;
 
-                    case 0:
+                    case MenuEntry.AddLogFile:
                         Console.WriteLine("Enter new log file to add");
                         string newFile = Console.ReadLine();
                         if(!File.Exists(newFile))
@@ -83,7 +70,7 @@ namespace returnzork.IIS_Log_Parser
                             display = new LogDisplay(logs);
                         }
                         break;
-                    case 5:
+                    case MenuEntry.LoadFolder:
                         Console.WriteLine("Enter folder to load from");
                         string dir = Console.ReadLine();
                         if (!Directory.Exists(dir))
@@ -97,7 +84,7 @@ namespace returnzork.IIS_Log_Parser
                         }
                         break;
 
-                    case 4:
+                    case MenuEntry.GlobalIgnore:
                         //global ignore
                         Console.WriteLine("Enter [ip, address] to ignore (MINIMUM 2 ENTRIES):");
                         string arr = Console.ReadLine();
@@ -114,7 +101,7 @@ namespace returnzork.IIS_Log_Parser
                             }
                         }
                         break;
-                    case 44:
+                    case MenuEntry.GlobalIgnoreFile:
                         Console.WriteLine("Enter file containing [ip, address] to ignore:");
                         string file = Console.ReadLine();
                         if(!File.Exists(file))
@@ -155,24 +142,24 @@ namespace returnzork.IIS_Log_Parser
                         break;
                         
 
-                    case 1:
+                    case MenuEntry.ShowClientIp:
                         display.ShowByClientIp();
                         break;
-                    case 10:
+                    case MenuEntry.ShowMultipleClientIp:
                         display.ShowByMultipleClientIp();
                         break;
-                    case 100:
+                    case MenuEntry.ShowNotClientIp:
                         display.ShowByNotClientIp();
                         break;
-                    case 1000:
+                    case MenuEntry.ShowMultipleNotClientIp:
                         display.ShowByMultipleNotClientIp();
                         break;
 
 
-                    case 2:
+                    case MenuEntry.ShowHTTPVerb:
                         display.ShowByHTTPVerb();
                         break;
-                    case 3:
+                    case MenuEntry.ShowStatusCode:
                         display.ShowByStatusCode();
                         break;
                 }
