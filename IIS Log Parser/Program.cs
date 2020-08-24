@@ -26,7 +26,7 @@ namespace returnzork.IIS_Log_Parser
 
         static void FileWork(string file)
         {
-            List<LogItem> parsed;
+            List<ILogItem> parsed;
             if(File.Exists(file))
             {
                 parsed = ParseLines(ReadFile(file));
@@ -40,7 +40,7 @@ namespace returnzork.IIS_Log_Parser
             Prompt(parsed);
         }
 
-        static void Prompt(List<LogItem> logs)
+        static void Prompt(List<ILogItem> logs)
         {
             bool shouldExit = false;
             LogDisplay display = new LogDisplay(logs);
@@ -180,11 +180,11 @@ namespace returnzork.IIS_Log_Parser
             while (!shouldExit);
         }
 
-        static List<LogItem> LoadDirectory(string dir)
+        static List<ILogItem> LoadDirectory(string dir)
         {
-            List<LogItem> logs = new List<LogItem>();
+            List<ILogItem> logs = new List<ILogItem>();
             string[] allLogFiles = Directory.GetFiles(dir);
-            List<LogItem>[] temp = new List<LogItem>[allLogFiles.Length];
+            List<ILogItem>[] temp = new List<ILogItem>[allLogFiles.Length];
             System.Threading.Tasks.Parallel.For(0, allLogFiles.Length, (i) =>
             {
                 temp[i] = ParseLines(ReadFile(allLogFiles[i]));
@@ -198,13 +198,13 @@ namespace returnzork.IIS_Log_Parser
             return logs;
         }
 
-        static List<LogItem> ParseLines(List<string> lines)
+        static List<ILogItem> ParseLines(List<string> lines)
         {
             //format is
             //#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken
             //space delimiters
 
-            List<LogItem> result = new List<LogItem>(lines.Count);
+            List<ILogItem> result = new List<ILogItem>(lines.Count);
             foreach(string item in lines)
             {
                 string[] split = item.Split(' ');

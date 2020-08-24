@@ -9,10 +9,10 @@ namespace returnzork.IIS_Log_Parser
 {
     internal class LogDisplay
     {
-        List<LogItem> logs;
+        List<ILogItem> logs;
 
 
-        internal LogDisplay(List<LogItem> logs)
+        internal LogDisplay(List<ILogItem> logs)
         {
             this.logs = logs;
         }
@@ -21,51 +21,35 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter ip address to match:");
             string ip = Console.ReadLine();
-            Display(logs.Where(x => x.ClientIpAddr == ip));
+            Display(LogModifier.GetByClientIp(logs, ip));
         }
 
         internal void ShowByNotClientIp()
         {
             Console.WriteLine("Enter IP to negate its lookup:");
             string ip = Console.ReadLine();
-            Display(logs.Where(x => x.ClientIpAddr != ip));
+            Display(LogModifier.GetByNotClientIp(logs, ip));
         }
 
         internal void ShowByMultipleClientIp()
         {
             Console.WriteLine("Enter an [ip, array] of ip address to match: (ex [127.0.0.1, 127.0.0.2])");
             string arr = Console.ReadLine();
-
-            if(!Helper.IpSplit(arr, out string[] split))
-            {
-                Console.WriteLine("Invalid format");
-            }
-            else
-            {
-                Display(logs.Where(x => split.Contains(x.ClientIpAddr)));
-            }
+            Display(LogModifier.GetByMultipleClientIp(logs, arr));
         }
 
         internal void ShowByMultipleNotClientIp()
         {
             Console.WriteLine("Enter an [ip, array] of ip address to negative match: (ex [127.0.0.1, 127.0.0.2])");
             string arr = Console.ReadLine();
-
-            if (!Helper.IpSplit(arr, out string[] split))
-            {
-                Console.WriteLine("Invalid Format");
-            }
-            else
-            {
-                Display(logs.Where(x => !split.Contains(x.ClientIpAddr)));
-            }
+            Display(LogModifier.GetByMultipleNotClientIp(logs, arr));
         }
 
         internal void ShowByHTTPVerb()
         {
             Console.WriteLine("Enter HTTP Verb to match:");
             string verb = Console.ReadLine().ToLower();
-            Display(logs.Where(x => x.HTTPVerb.ToLower() == verb));
+            Display(LogModifier.GetByHTTPVerb(logs, verb));
         }
 
         internal void ShowByStatusCode()
@@ -76,11 +60,11 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine("Invalid code");
                 return;
             }
-            Display(logs.Where(x => x.HTTPStatus == code));
+            Display(LogModifier.GetByStatusCode(logs, code));
         }
 
 
-        private void Display(IEnumerable<LogItem> results)
+        private void Display(IEnumerable<ILogItem> results)
         {
             Console.WriteLine();
 
