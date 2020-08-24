@@ -10,7 +10,7 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
     {
         static Type logItemType;
 
-        internal static ILogItem GetGenericLog(string clientIp, string verb)
+        internal static ILogItem GetGenericLog(string clientIp, string verb, int status)
         {
             if(logItemType == null)
                 logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
@@ -26,7 +26,7 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
             string ClientIpAddr = clientIp;
             string UserAgent = "FakeUserAgent";
             string Referer = "none";
-            int HTTPStatus = 200;
+            int HTTPStatus = status;
             int HTTPSubStatus = 0;
             string WindowsStatus = "0";
             TimeSpan TimeTaken = new TimeSpan(0);

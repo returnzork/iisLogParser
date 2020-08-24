@@ -27,21 +27,21 @@ namespace returnzork.IIS_Log_Parser_Tests
         private List<ILogItem> TestInit_LoadLogs()
         {
             List<ILogItem> logs = new List<ILogItem>();
-            //127.0.0.0 -> 127.0.0.4 GET
+            //127.0.0.0 -> 127.0.0.4 GET 200
             for (int i = 0; i < 5; i++)
             {
-                logs.Add(LogItemMock.GetGenericLog("127.0.0." + i, "GET"));
+                logs.Add(LogItemMock.GetGenericLog("127.0.0." + i, "GET", 200));
             }
-            //127.0.0.251 -> 127.0.0.255 POST
+            //127.0.0.251 -> 127.0.0.255 POST 200
             for(int i = 255; i > 250; i--)
             {
-                logs.Add(LogItemMock.GetGenericLog("127.0.0." + i, "POST"));
+                logs.Add(LogItemMock.GetGenericLog("127.0.0." + i, "POST", 200));
             }
 
-            //5 sets of 127.0.0.55 TEST
+            //5 sets of 127.0.0.55 TEST 404
             for(int i = 50; i < 55; i++)
             {
-                logs.Add(LogItemMock.GetGenericLog("127.0.0.55", "TEST"));
+                logs.Add(LogItemMock.GetGenericLog("127.0.0.55", "TEST", 404));
             }
 
             return logs;
@@ -136,8 +136,14 @@ namespace returnzork.IIS_Log_Parser_Tests
         [TestMethod]
         public void GetByStatusCode()
         {
-            //only a single status code is ever added in tests
-            Assert.Inconclusive();
+            //tests has 10 - 200's and 5 - 404's
+            MethodInfo method = logModifierType.GetMethod("GetByStatusCode", BindingFlags.Static | BindingFlags.NonPublic);
+
+            IEnumerable<ILogItem> result200 = method.Invoke(null, new object[] { logs, 200 }) as IEnumerable<ILogItem>;
+            Assert.AreEqual(10, result200.Count());
+
+            IEnumerable<ILogItem> result404 = method.Invoke(null, new object[] { logs, 404 }) as IEnumerable<ILogItem>;
+            Assert.AreEqual(5, result404.Count());
         }
     }
 }
