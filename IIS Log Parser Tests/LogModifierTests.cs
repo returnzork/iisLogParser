@@ -14,13 +14,11 @@ namespace returnzork.IIS_Log_Parser_Tests
     {
         List<ILogItem> logs;
         Type logModifierType;
-        Type logItemType;
 
         [TestInitialize]
         public void TestInit()
         {
             logModifierType = Type.GetType("returnzork.IIS_Log_Parser.LogModifier, IIS Log Parser");
-            logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
             logs = TestInit_LoadLogs();
         }
 
