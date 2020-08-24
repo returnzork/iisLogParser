@@ -10,25 +10,33 @@ namespace returnzork.IIS_Log_Parser
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter a IIS Log file to parse");
+            Console.WriteLine("Enter a IIS Log file/directory to parse");
             string file = Console.ReadLine();
 
-            if(!File.Exists(file))
+            if(!(File.Exists(file) || Directory.Exists(file)))
             {
-                Console.WriteLine("File does not exist");
+                Console.WriteLine("No log was found");
             }
             else
             {
                 FileWork(file);
             }
+            Console.ReadLine();
         }
 
         static void FileWork(string file)
         {
-            var lines = ReadFile(file);
-            Console.WriteLine($"There were a total of {lines.Count} log entries");
+            List<LogItem> parsed;
+            if(File.Exists(file))
+            {
+                parsed = ParseLines(ReadFile(file));
+            }
+            else
+            {
+                parsed = LoadDirectory(file);
+            }
 
-            var parsed = ParseLines(lines);
+            Console.WriteLine($"There were a total of {parsed.Count} log entries");
             Prompt(parsed);
         }
 
@@ -78,25 +86,13 @@ namespace returnzork.IIS_Log_Parser
                     case 5:
                         Console.WriteLine("Enter folder to load from");
                         string dir = Console.ReadLine();
-                        if(!Directory.Exists(dir))
+                        if (!Directory.Exists(dir))
                         {
                             Console.WriteLine("Directory does not exist");
                         }
                         else
                         {
-                            logs = new List<LogItem>();
-                            string[] allLogFiles = Directory.GetFiles(dir);
-                            List<LogItem>[] temp = new List<LogItem>[allLogFiles.Length];
-                            System.Threading.Tasks.Parallel.For(0, allLogFiles.Length, (i) =>
-                            {
-                                temp[i] = ParseLines(ReadFile(allLogFiles[i]));
-                            });
-
-                            foreach(var li in temp)
-                            {
-                                logs.AddRange(li);
-                            }
-
+                            logs = LoadDirectory(dir);
                             display = new LogDisplay(logs);
                         }
                         break;
@@ -182,6 +178,24 @@ namespace returnzork.IIS_Log_Parser
                 }
             }
             while (!shouldExit);
+        }
+
+        static List<LogItem> LoadDirectory(string dir)
+        {
+            List<LogItem> logs = new List<LogItem>();
+            string[] allLogFiles = Directory.GetFiles(dir);
+            List<LogItem>[] temp = new List<LogItem>[allLogFiles.Length];
+            System.Threading.Tasks.Parallel.For(0, allLogFiles.Length, (i) =>
+            {
+                temp[i] = ParseLines(ReadFile(allLogFiles[i]));
+            });
+
+            foreach (var li in temp)
+            {
+                logs.AddRange(li);
+            }
+
+            return logs;
         }
 
         static List<LogItem> ParseLines(List<string> lines)
