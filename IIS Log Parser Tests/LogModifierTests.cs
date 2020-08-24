@@ -97,6 +97,19 @@ namespace returnzork.IIS_Log_Parser_Tests
             MethodInfo method = logModifierType.GetMethod("GetByMultipleNotClientIp", BindingFlags.Static | BindingFlags.NonPublic);
             IEnumerable<ILogItem> result = method.Invoke(null, new object[] { logs, "[127.0.0.1, 127.0.0.55]" }) as IEnumerable<ILogItem>;
             Assert.AreEqual(9, result.Count());
+
+            //check the error handling
+            Assert.ThrowsException<FormatException>(() =>
+            {
+                try
+                {
+                    method.Invoke(null, new object[] { logs, "[bad format" });
+                }
+                catch (TargetInvocationException tie)
+                {
+                    throw tie.InnerException;
+                }
+            });
         }
 
         [TestMethod]

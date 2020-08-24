@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using returnzork.IIS_Log_Parser;
 using System;
 using System.Reflection;
 
@@ -15,19 +15,11 @@ namespace returnzork.IIS_Log_Parser_Tests
             logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
         }
 
-
-        private T GetProperty<T>(object instance, string property)
-        {
-            PropertyInfo pi = logItemType.GetProperty(property, BindingFlags.Instance | BindingFlags.NonPublic);
-            return (T)pi.GetValue(instance);
-        }
-
-
         [TestMethod]
         public void CreateDefaultLogItem()
         {
-            object instance = Activator.CreateInstance(logItemType);
-            Assert.IsFalse(GetProperty<bool>(instance, "IsValid"));
+            ILogItem instance = Activator.CreateInstance(logItemType) as ILogItem;
+            Assert.IsFalse(instance.IsValid);
         }
 
         [TestMethod]
@@ -56,24 +48,24 @@ namespace returnzork.IIS_Log_Parser_Tests
 
 
             ConstructorInfo ctor = logItemType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(string[]) }, null);
-            object instance = ctor.Invoke(new object[] { new string[] { $"{year}-{month}-{day}", $"{hour}:{minute}:{second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, ClientIpAddr, UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() } });
+            ILogItem instance = ctor.Invoke(new object[] { new string[] { $"{year}-{month}-{day}", $"{hour}:{minute}:{second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, ClientIpAddr, UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() } }) as ILogItem;
 
 
-            Assert.IsTrue(GetProperty<bool>(instance, "IsValid"));
-            Assert.AreEqual(Time, GetProperty<DateTime>(instance, "Time"));
-            Assert.AreEqual(ServerIpAddr, GetProperty<string>(instance, "ServerIpAddr"));
-            Assert.AreEqual(HTTPVerb, GetProperty<string>(instance, "HTTPVerb"));
-            Assert.AreEqual(Uri, GetProperty<string>(instance, "Uri"));
-            Assert.AreEqual(Query, GetProperty<string>(instance, "Query"));
-            Assert.AreEqual(Port, GetProperty<int>(instance, "Port"));
-            Assert.AreEqual(Username, GetProperty<string>(instance, "Username"));
-            Assert.AreEqual(ClientIpAddr, GetProperty<string>(instance, "ClientIpAddr"));
-            Assert.AreEqual(UserAgent, GetProperty<string>(instance, "UserAgent"));
-            Assert.AreEqual(Referer, GetProperty<string>(instance, "Referer"));
-            Assert.AreEqual(HTTPStatus, GetProperty<int>(instance, "HTTPStatus"));
-            Assert.AreEqual(HTTPSubStatus, GetProperty<int>(instance, "HTTPSubStatus"));
-            Assert.AreEqual(WindowsStatus, GetProperty<string>(instance, "WindowsStatus"));
-            Assert.AreEqual(TimeTaken, GetProperty<TimeSpan>(instance, "TimeTaken"));
+            Assert.IsTrue(instance.IsValid);
+            Assert.AreEqual(Time, instance.Time);
+            Assert.AreEqual(ServerIpAddr, instance.ServerIpAddr);
+            Assert.AreEqual(HTTPVerb, instance.HTTPVerb);
+            Assert.AreEqual(Uri, instance.Uri);
+            Assert.AreEqual(Query, instance.Query);
+            Assert.AreEqual(Port, instance.Port);
+            Assert.AreEqual(Username, instance.Username);
+            Assert.AreEqual(ClientIpAddr, instance.ClientIpAddr);
+            Assert.AreEqual(UserAgent, instance.UserAgent);
+            Assert.AreEqual(Referer, instance.Referer);
+            Assert.AreEqual(HTTPStatus, instance.HTTPStatus);
+            Assert.AreEqual(HTTPSubStatus, instance.HTTPSubStatus);
+            Assert.AreEqual(WindowsStatus, instance.WindowsStatus);
+            Assert.AreEqual(TimeTaken, instance.TimeTaken);
         }
     }
 }
