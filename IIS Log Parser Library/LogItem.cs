@@ -4,7 +4,7 @@ using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal struct LogItem : ILogItem
+    public struct LogItem : ILogItem
     {
         /// <summary>
         /// Was this LogItem loaded successfully?
@@ -73,7 +73,7 @@ namespace returnzork.IIS_Log_Parser
         /// Create a new LogItem
         /// </summary>
         /// <param name="args">Array containing each piece of the log file</param>
-        internal LogItem(string[] args)
+        public LogItem(string[] args)
         {
             //format is
             //#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken
