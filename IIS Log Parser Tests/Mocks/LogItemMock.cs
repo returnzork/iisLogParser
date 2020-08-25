@@ -31,7 +31,7 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
             string WindowsStatus = "0";
             TimeSpan TimeTaken = new TimeSpan(0);
 
-            ILogItem instance = new LogItem(new string[] { $"{Time.Year}-{Time.Month}-{Time.Day}", $"{Time.Hour}:{Time.Minute}:{Time.Second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, 
+            ILogItem instance = LogItem.Create(new string[] { $"{Time.Year}-{Time.Month}-{Time.Day}", $"{Time.Hour}:{Time.Minute}:{Time.Second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, 
                 ClientIpAddr, UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() });
             return (ILogItem)instance;
         }

@@ -70,7 +70,7 @@ namespace returnzork.IIS_Log_Parser
             foreach(string item in lines)
             {
                 string[] split = item.Split(' ');
-                result.Add(new LogItem(split));
+                result.Add(LogItem.Create(split));
             }
 
             return result;
