@@ -6,4 +6,8 @@
     <RootNamespace>returnzork.IIS_Log_Parser</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\IIS Log Parser Library\IIS Log Parser Library.csproj" />
+  </ItemGroup>
+
 </Project>
