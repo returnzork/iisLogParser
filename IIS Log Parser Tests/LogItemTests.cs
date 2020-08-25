@@ -8,17 +8,10 @@ namespace returnzork.IIS_Log_Parser_Tests
     [TestClass]
     public class LogItemTests
     {
-        Type logItemType;
-        [TestInitialize]
-        public void TestInit()
-        {
-            logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
-        }
-
         [TestMethod]
         public void CreateDefaultLogItem()
         {
-            ILogItem instance = Activator.CreateInstance(logItemType) as ILogItem;
+            ILogItem instance = new LogItem();
             Assert.IsFalse(instance.IsValid);
         }
 
@@ -45,10 +38,8 @@ namespace returnzork.IIS_Log_Parser_Tests
             TimeSpan TimeTaken = new TimeSpan(0);
 
 
-
-
-            ConstructorInfo ctor = logItemType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(string[]) }, null);
-            ILogItem instance = ctor.Invoke(new object[] { new string[] { $"{year}-{month}-{day}", $"{hour}:{minute}:{second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, ClientIpAddr, UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() } }) as ILogItem;
+            ILogItem instance = LogItem.Create(new string[] { $"{year}-{month}-{day}", $"{hour}:{minute}:{second}", ServerIpAddr, HTTPVerb, Uri, Query, Port.ToString(), Username, ClientIpAddr, 
+                UserAgent, Referer, HTTPStatus.ToString(), HTTPSubStatus.ToString(), WindowsStatus, TimeTaken.TotalMilliseconds.ToString() } );
 
 
             Assert.IsTrue(instance.IsValid);
