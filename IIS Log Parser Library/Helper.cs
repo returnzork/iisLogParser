@@ -17,8 +17,8 @@ namespace returnzork.IIS_Log_Parser
                 result = null;
                 return false;
             }
-            //check format, must start with [ end with ] and contain a , delimiter
-            if (arr[0] != '[' || arr[arr.Length - 1] != ']' || !arr.Contains(','))
+            //check format, must start with [ end with ]
+            if (arr[0] != '[' || arr[arr.Length - 1] != ']' || arr.Length == 2)
             {
                 result = null;
                 return false;

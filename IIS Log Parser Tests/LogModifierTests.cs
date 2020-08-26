@@ -66,6 +66,14 @@ namespace returnzork.IIS_Log_Parser_Tests
         }
 
         [TestMethod]
+        public void GetByMultipleClientIpSingleEntry()
+        {
+            //call get multiple with only 1 ip specified, [127.0.0.1] = 1 match
+            IEnumerable<ILogItem> result = LogModifier.GetByMultipleClientIp(logs, "[127.0.0.1]");
+            Assert.AreEqual(1, result.Count());
+        }
+
+        [TestMethod]
         public void GetByMultipleNotClientIp()
         {
             //get matches of not [127.0.0.1, 127.0.0.55] = 15 - 1 [127.0.0.1] - 5 [127.0.0.55] = 9 matches
@@ -74,6 +82,14 @@ namespace returnzork.IIS_Log_Parser_Tests
 
             //check the error handling
             Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleNotClientIp(logs, "[bad format"));
+        }
+
+        [TestMethod]
+        public void GetByMultipleNotClientIpSingleEntry()
+        {
+            //call get multiple not with only 1 ip specified, [127.0.0.1] = 14 matches
+            IEnumerable<ILogItem> result = LogModifier.GetByMultipleNotClientIp(logs, "[127.0.0.1]");
+            Assert.AreEqual(14, result.Count());
         }
 
         [TestMethod]

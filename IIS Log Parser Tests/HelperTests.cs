@@ -34,10 +34,19 @@ namespace returnzork.IIS_Log_Parser_Tests
         }
 
         [TestMethod]
-        public void IpSplitMIssingItemTest()
+        public void IpSplitSingleItemTest()
         {
-            //only has 1 ip listed instead of the multiple required
-            const string INVALID = "[127.0.0.1]";
+            //only has 1 ip listed instead of multiple
+            const string VALID = "[127.0.0.1]";
+            Assert.IsTrue(Helper.IpSplit(VALID, out string[] result));
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual("127.0.0.1", result[0]);
+        }
+
+        [TestMethod]
+        public void IpSplitNoItemsTest()
+        {
+            const string INVALID = "[]";
             Assert.IsFalse(Helper.IpSplit(INVALID, out _));
         }
     }
