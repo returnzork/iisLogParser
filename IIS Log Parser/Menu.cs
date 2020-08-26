@@ -5,9 +5,7 @@ using System.Text;
 namespace returnzork.IIS_Log_Parser
 {
     internal enum MenuEntry { NONE, Exit, AddLogFile, LoadFolder, GlobalIgnore, GlobalIgnoreFile, ShowClientIp,
-        ShowMultipleClientIp,
         ShowNotClientIp,
-        ShowMultipleNotClientIp,
         ShowHTTPVerb,
         ShowStatusCode
     }
@@ -18,9 +16,7 @@ namespace returnzork.IIS_Log_Parser
             Console.WriteLine("0 - Load a log file to what is already loaded");
             Console.WriteLine("5 - Load folder of log files, removing what is already loaded");
             Console.WriteLine("1 - Show items by client ip address");
-            Console.WriteLine("10 - Show items by multiple client ip address");
-            Console.WriteLine("100 - Show items not matching client ip address");
-            Console.WriteLine("1000 - Show items not maching multiple client ip address");
+            Console.WriteLine("10 - Show items not matching client ip address");
             Console.WriteLine("2 - Show items by HTTP verb");
             Console.WriteLine("3 - Match by status code");
             Console.WriteLine("4 - Add global ignore");
@@ -59,11 +55,7 @@ namespace returnzork.IIS_Log_Parser
                 case 1:
                     return MenuEntry.ShowClientIp;
                 case 10:
-                    return MenuEntry.ShowMultipleClientIp;
-                case 100:
                     return MenuEntry.ShowNotClientIp;
-                case 1000:
-                    return MenuEntry.ShowMultipleNotClientIp;
 
 
                 case 2:

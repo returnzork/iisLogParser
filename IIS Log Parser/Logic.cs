@@ -55,14 +55,8 @@ namespace returnzork.IIS_Log_Parser
                     case MenuEntry.ShowClientIp:
                         display.ShowByClientIp();
                         break;
-                    case MenuEntry.ShowMultipleClientIp:
-                        display.ShowByMultipleClientIp();
-                        break;
                     case MenuEntry.ShowNotClientIp:
                         display.ShowByNotClientIp();
-                        break;
-                    case MenuEntry.ShowMultipleNotClientIp:
-                        display.ShowByMultipleNotClientIp();
                         break;
 
 

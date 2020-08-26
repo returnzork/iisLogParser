@@ -21,28 +21,20 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter ip address to match:");
             string ip = Console.ReadLine();
-            Display(LogModifier.GetByClientIp(logs, ip));
+            if (!ip.Contains(',') && ip[0] != '[')
+                Display(LogModifier.GetByClientIp(logs, ip));
+            else
+                Display(LogModifier.GetByMultipleClientIp(logs, ip));
         }
 
         internal void ShowByNotClientIp()
         {
             Console.WriteLine("Enter IP to negate its lookup:");
             string ip = Console.ReadLine();
-            Display(LogModifier.GetByNotClientIp(logs, ip));
-        }
-
-        internal void ShowByMultipleClientIp()
-        {
-            Console.WriteLine("Enter an [ip, array] of ip address to match: (ex [127.0.0.1, 127.0.0.2])");
-            string arr = Console.ReadLine();
-            Display(LogModifier.GetByMultipleClientIp(logs, arr));
-        }
-
-        internal void ShowByMultipleNotClientIp()
-        {
-            Console.WriteLine("Enter an [ip, array] of ip address to negative match: (ex [127.0.0.1, 127.0.0.2])");
-            string arr = Console.ReadLine();
-            Display(LogModifier.GetByMultipleNotClientIp(logs, arr));
+            if (!ip.Contains(',') && ip[0] != '[')
+                Display(LogModifier.GetByNotClientIp(logs, ip));
+            else
+                Display(LogModifier.GetByMultipleNotClientIp(logs, ip));
         }
 
         internal void ShowByHTTPVerb()
