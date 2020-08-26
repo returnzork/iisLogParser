@@ -18,4 +18,10 @@
     <ProjectReference Include="..\IIS Log Parser Library\IIS Log Parser Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="log.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
