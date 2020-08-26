@@ -23,7 +23,8 @@ namespace returnzork.IIS_Log_Parser_Tests
             //expected UserAgent
             //expected Action
             //expected Action Name
-            string log, url, host, userAgent, action, actionname;
+            //expected Remote Address
+            string log, url, host, userAgent, action, actionname, remoteAddress;
             int statusCode;
 
             using (StreamReader sr = new StreamReader(LOGFILE))
@@ -35,6 +36,7 @@ namespace returnzork.IIS_Log_Parser_Tests
                 userAgent = sr.ReadLine();
                 action = sr.ReadLine();
                 actionname = sr.ReadLine();
+                remoteAddress = sr.ReadLine();
             }
 
             IFailedReqLogItem req = FailedReqLogItem.LoadFailedReq(log);
@@ -44,6 +46,7 @@ namespace returnzork.IIS_Log_Parser_Tests
             Assert.AreEqual(userAgent, req.UserAgent);
             Assert.AreEqual(action, req.Action.ToString());
             Assert.AreEqual(actionname, req.ActionName);
+            Assert.AreEqual(remoteAddress, req.RemoteAddress);
         }
     }
 }

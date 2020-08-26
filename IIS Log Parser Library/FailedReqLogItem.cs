@@ -17,6 +17,7 @@ namespace returnzork.IIS_Log_Parser
         public string UserAgent { get; }
         public FailedAction Action { get; }
         public string ActionName { get; }
+        public string RemoteAddress { get; }
 
 
         private FailedReqLogItem(string file)
@@ -37,6 +38,8 @@ namespace returnzork.IIS_Log_Parser
             var zzz = doc.Root.Elements().ToList()[46].Elements().ToList()[2].Elements().ToList()[0].Value;
             Action = (FailedAction)Enum.Parse(typeof(FailedAction), zzz);
             ActionName = doc.Root.Elements().ToList()[44].Elements().ToList()[1].Elements().ToList()[1].Value;
+
+            RemoteAddress = doc.Root.Elements().ToList()[2].Elements().ToList()[1].Elements().ToList()[1].Value;
         }
 
         public static IFailedReqLogItem LoadFailedReq(string file)

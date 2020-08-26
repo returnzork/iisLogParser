@@ -4,7 +4,7 @@ using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    public enum FailedAction { NONE, ABORT_REQUEST_ACTION }
+    public enum FailedAction { NONE, ABORT_REQUEST_ACTION, GENERAL_RESPONSE_HEADERS, RULE_EVALUATION_END }
     public interface IFailedReqLogItem
     {
         string Url { get; }
@@ -13,5 +13,6 @@ namespace returnzork.IIS_Log_Parser
         string UserAgent { get; }
         FailedAction Action { get; }
         string ActionName { get; }
+        string RemoteAddress { get; }
     }
 }
