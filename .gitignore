@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /IIS Log Parser Tests/log.txt
+/IIS Log Parser Tests/log2.txt

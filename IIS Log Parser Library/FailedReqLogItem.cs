@@ -30,8 +30,12 @@ namespace returnzork.IIS_Log_Parser
 
             //Get the host and user agent from the Headers attribute
             var split = doc.Root.Descendants().First(x => x.HasAttributes && x.Attribute("Name")?.Value == "Headers").Value.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            this.Host = split[0].Substring(split[0].IndexOf(' ') + 1);
-            if (split.Length != 1)
+            if (split.Length == 0)
+                Host = "No Host Specified In Log File";
+            else
+                this.Host = split[0].Substring(split[0].IndexOf(' ') + 1);
+
+            if (split.Length > 1)
                 UserAgent = split[1].Substring(split[1].IndexOf(' ') + 1);
             else
                 UserAgent = "No User Agent Specified In Log File";

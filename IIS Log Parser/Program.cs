@@ -19,7 +19,17 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                FileWork(file);
+                if (Directory.Exists(file) && Directory.GetFiles(file, "*.xml").Any())
+                {
+                    FailedRequestDisplay frd = new FailedRequestDisplay(file);
+                    frd.Display();
+                }
+                else if((new FileInfo(file)).Extension == ".xml")
+                {
+                    Console.WriteLine("Only XML directories are supported");
+                }
+                else
+                    FileWork(file);
             }
             Console.ReadLine();
         }
