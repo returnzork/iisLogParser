@@ -25,21 +25,29 @@ namespace returnzork.IIS_Log_Parser
             //load the document and traverse it
             XDocument doc = XDocument.Load(file);
             Url = doc.Root.Attribute("url").Value;
-
-            var z = doc.Root.Elements().ToList()[3].Elements().ToList()[1].Elements().ToList()[1].Value;
-            var split = z.Split('\n');
-
-            Host = split[2].Substring(split[2].IndexOf(' ') + 1);
-            UserAgent = split[3].Substring(split[3].IndexOf(' ') + 1);
-
             StatusCode = int.Parse(doc.Root.Attribute("statusCode").Value);
 
-            var c = doc.Root.Elements().ToList().Count();
-            var zzz = doc.Root.Elements().ToList()[46].Elements().ToList()[2].Elements().ToList()[0].Value;
-            Action = (FailedAction)Enum.Parse(typeof(FailedAction), zzz);
-            ActionName = doc.Root.Elements().ToList()[44].Elements().ToList()[1].Elements().ToList()[1].Value;
 
-            RemoteAddress = doc.Root.Elements().ToList()[2].Elements().ToList()[1].Elements().ToList()[1].Value;
+            //Get the host and user agent from the Headers attribute
+            var split = doc.Root.Descendants().First(x => x.HasAttributes && x.Attribute("Name")?.Value == "Headers").Value.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            this.Host = split[0].Substring(split[0].IndexOf(' ') + 1);
+            if (split.Length != 1)
+                UserAgent = split[1].Substring(split[1].IndexOf(' ') + 1);
+            else
+                UserAgent = "No User Agent Specified In Log File";
+
+            //get the failed action
+            //It is stored in an element named Opcode. Some Opcode data is numerical (which can be parsed incorrectly to the FailedAction enum), so we must ignore those values. Also ignore the Rule Evaluation End because that is not what we are looking for
+            var failActionNode = doc.Root.Descendants().First(x => x.Name.LocalName == "Opcode" && Enum.IsDefined(typeof(FailedAction), x.Value) && Enum.TryParse(typeof(FailedAction), x.Value, out object result) && (FailedAction)result != FailedAction.RULE_EVALUATION_END);
+            Action = (FailedAction)Enum.Parse(typeof(FailedAction), failActionNode.Value);
+
+            //get the name of the failed action from the last RuleName attribute
+            var t1 = doc.Root.Elements().ToList()[44].Elements().ToList()[1].Elements().ToList()[1];
+            var t2 = doc.Root.Descendants().Last(x => x.HasAttributes && x.FirstAttribute.Value == "RuleName");
+            ActionName = t2.Value;
+
+            //get the remote address from the RemoteAddress attribute
+            RemoteAddress = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;
         }
 
         public static IFailedReqLogItem LoadFailedReq(string file)
