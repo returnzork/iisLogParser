@@ -38,13 +38,12 @@ namespace returnzork.IIS_Log_Parser
 
             //get the failed action
             //It is stored in an element named Opcode. Some Opcode data is numerical (which can be parsed incorrectly to the FailedAction enum), so we must ignore those values. Also ignore the Rule Evaluation End because that is not what we are looking for
-            var failActionNode = doc.Root.Descendants().First(x => x.Name.LocalName == "Opcode" && Enum.IsDefined(typeof(FailedAction), x.Value) && Enum.TryParse(typeof(FailedAction), x.Value, out object result) && (FailedAction)result != FailedAction.RULE_EVALUATION_END);
-            Action = (FailedAction)Enum.Parse(typeof(FailedAction), failActionNode.Value);
+            var failActionNode = doc.Root.Descendants().First(x => x.Name.LocalName == "Opcode" && Enum.IsDefined(typeof(FailedAction), x.Value) && Enum.TryParse(x.Value, out FailedAction result) && result != FailedAction.RULE_EVALUATION_END);
+            Action = Enum.Parse<FailedAction>(failActionNode.Value);
 
             //get the name of the failed action from the last RuleName attribute
-            var t1 = doc.Root.Elements().ToList()[44].Elements().ToList()[1].Elements().ToList()[1];
-            var t2 = doc.Root.Descendants().Last(x => x.HasAttributes && x.FirstAttribute.Value == "RuleName");
-            ActionName = t2.Value;
+            var actionnameNode = doc.Root.Descendants().Last(x => x.HasAttributes && x.FirstAttribute.Value == "RuleName");
+            ActionName = actionnameNode.Value;
 
             //get the remote address from the RemoteAddress attribute
             RemoteAddress = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;
