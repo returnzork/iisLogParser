@@ -54,6 +54,7 @@ namespace returnzork.IIS_Log_Parser
                 Console.WriteLine(li.RemoteAddress + " - " + li.Time);
                 Console.WriteLine($"\t{li.Url}");
                 Console.WriteLine($"\t{li.UserAgent}");
+                Console.WriteLine($"\t{li.ActionName}");
             }
         }
 
