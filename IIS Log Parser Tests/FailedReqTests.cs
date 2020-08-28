@@ -1,10 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.IO;
 using returnzork.IIS_Log_Parser;
+using System;
+using System.IO;
 
 namespace returnzork.IIS_Log_Parser_Tests
 {
@@ -25,12 +22,14 @@ namespace returnzork.IIS_Log_Parser_Tests
             //expected Action
             //expected Action Name
             //expected Remote Address
+            //log time
             foreach (string lf in LOGFILES)
             {
                 if (!File.Exists(lf))
                     Assert.Inconclusive("Log file not found");
                 string log, url, host, userAgent, action, actionname, remoteAddress;
                 int statusCode;
+                DateTime time;
 
                 using (StreamReader sr = new StreamReader(lf))
                 {
@@ -42,6 +41,7 @@ namespace returnzork.IIS_Log_Parser_Tests
                     action = sr.ReadLine();
                     actionname = sr.ReadLine();
                     remoteAddress = sr.ReadLine();
+                    time = DateTime.Parse(sr.ReadLine());
                 }
 
                 IFailedReqLogItem req = FailedReqLogItem.LoadFailedReq(log);
@@ -52,7 +52,9 @@ namespace returnzork.IIS_Log_Parser_Tests
                 Assert.AreEqual(action, req.Action.ToString());
                 Assert.AreEqual(actionname, req.ActionName);
                 Assert.AreEqual(remoteAddress, req.RemoteAddress);
+                Assert.AreEqual(time, req.Time);
             }
         }
     }
+
 }

@@ -16,5 +16,6 @@ namespace returnzork.IIS_Log_Parser
         FailedAction Action { get; }
         string ActionName { get; }
         string RemoteAddress { get; }
+        DateTime Time { get; }
     }
 }

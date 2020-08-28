@@ -51,7 +51,7 @@ namespace returnzork.IIS_Log_Parser
         {
             foreach(var li in logs)
             {
-                Console.WriteLine(li.RemoteAddress);
+                Console.WriteLine(li.RemoteAddress + " - " + li.Time);
                 Console.WriteLine($"\t{li.Url}");
                 Console.WriteLine($"\t{li.UserAgent}");
             }

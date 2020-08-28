@@ -21,6 +21,8 @@ namespace returnzork.IIS_Log_Parser
         public string ActionName { get; }
         public string RemoteAddress { get; }
 
+        public DateTime Time { get; }
+
 
         private FailedReqLogItem(string file)
         {
@@ -57,6 +59,9 @@ namespace returnzork.IIS_Log_Parser
 
             //get the remote address from the RemoteAddress attribute
             RemoteAddress = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;
+
+            //get the SystemTime that it started, with the SystemTime attribute
+            Time = DateTime.Parse(doc.Root.Descendants().First(x => x.HasAttributes && x.Attributes().Any(z => z.Name.LocalName == "SystemTime")).Attribute("SystemTime").Value);
         }
 
         public static IFailedReqLogItem LoadFailedReq(string file)
