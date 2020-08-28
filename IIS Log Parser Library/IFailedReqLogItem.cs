@@ -4,9 +4,11 @@ using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    public enum FailedAction { NONE, ABORT_REQUEST_ACTION, GENERAL_RESPONSE_HEADERS, RULE_EVALUATION_END }
+    public enum FailedAction { NONE, ABORT_REQUEST_ACTION, URL_CHANGED, RULE_EVALUATION_END }
     public interface IFailedReqLogItem
     {
+        string FileName { get; }
+
         string Url { get; }
         string Host { get; }
         int StatusCode { get; }

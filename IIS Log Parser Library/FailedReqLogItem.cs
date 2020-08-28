@@ -11,6 +11,8 @@ namespace returnzork.IIS_Log_Parser
 {
     public struct FailedReqLogItem : IFailedReqLogItem
     {
+        public string FileName { get; }
+
         public string Url { get; }
         public string Host { get; }
         public int StatusCode { get; }
@@ -22,6 +24,7 @@ namespace returnzork.IIS_Log_Parser
 
         private FailedReqLogItem(string file)
         {
+            FileName = file;
             //load the document and traverse it
             XDocument doc = XDocument.Load(file);
             Url = doc.Root.Attribute("url").Value;
@@ -31,14 +34,17 @@ namespace returnzork.IIS_Log_Parser
             //Get the host and user agent from the Headers attribute
             var split = doc.Root.Descendants().First(x => x.HasAttributes && x.Attribute("Name")?.Value == "Headers").Value.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             if (split.Length == 0)
+            {
                 Host = "No Host Specified In Log File";
-            else
-                this.Host = split[0].Substring(split[0].IndexOf(' ') + 1);
-
-            if (split.Length > 1)
-                UserAgent = split[1].Substring(split[1].IndexOf(' ') + 1);
-            else
                 UserAgent = "No User Agent Specified In Log File";
+            }
+            else
+            {
+                var s1 = split.FirstOrDefault(x => x.StartsWith("Host: "));
+                Host = s1?.Substring(s1.IndexOf(' ') + 1) ?? "No Host Specified In Log File";
+                var s2 = split.FirstOrDefault(x => x.StartsWith("User-Agent: "));
+                UserAgent = s2?.Substring(s2.IndexOf(' ') + 1) ?? "No User Agent Specified In Log File";
+            }
 
             //get the failed action
             //It is stored in an element named Opcode. Some Opcode data is numerical (which can be parsed incorrectly to the FailedAction enum), so we must ignore those values. Also ignore the Rule Evaluation End because that is not what we are looking for
