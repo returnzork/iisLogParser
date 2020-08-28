@@ -54,8 +54,8 @@ namespace returnzork.IIS_Log_Parser
             Action = Enum.Parse<FailedAction>(failActionNode.Value);
 
             //get the name of the failed action from the last RuleName attribute
-            var actionnameNode = doc.Root.Descendants().Last(x => x.HasAttributes && x.FirstAttribute.Value == "RuleName");
-            ActionName = actionnameNode.Value;
+            var actionnameNode = doc.Root.Descendants().LastOrDefault(x => x.HasAttributes && x.FirstAttribute.Value == "RuleName");
+            ActionName = actionnameNode?.Value ?? "No Action Name";
 
             //get the remote address from the RemoteAddress attribute
             RemoteAddress = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;

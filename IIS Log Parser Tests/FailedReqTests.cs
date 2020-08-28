@@ -26,7 +26,7 @@ namespace returnzork.IIS_Log_Parser_Tests
             foreach (string lf in LOGFILES)
             {
                 if (!File.Exists(lf))
-                    Assert.Inconclusive("Log file not found");
+                    Assert.Inconclusive("Test Log file not found");
                 string log, url, host, userAgent, action, actionname, remoteAddress;
                 int statusCode;
                 DateTime time;
@@ -43,6 +43,9 @@ namespace returnzork.IIS_Log_Parser_Tests
                     remoteAddress = sr.ReadLine();
                     time = DateTime.Parse(sr.ReadLine());
                 }
+
+                if (!File.Exists(log))
+                    Assert.Inconclusive("XML Log file not found");
 
                 IFailedReqLogItem req = FailedReqLogItem.LoadFailedReq(log);
                 Assert.AreEqual(url, req.Url);
