@@ -8,11 +8,11 @@ namespace returnzork.IIS_Log_Parser_Tests
     [TestClass]
     public class FailedReqTests
     {
-        readonly string[] LOGFILES = { "log.txt", "log2.txt", "log3.txt" };
-
         [TestMethod]
         public void LoadLogFile()
         {
+            //get the log files to test
+            string[] LOGFILES = Directory.GetFiles(Environment.CurrentDirectory, "log*.txt");
             //log file format:
             //path to log.xml
             //expected Url
