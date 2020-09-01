@@ -8,23 +8,31 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    enum FailedRequestMenuItem { NONE, Exit, IgnoreByUrl, IgnoreByUserAgent, Display, IgnoreByIP, IgnoreByHost }
+    enum FailedRequestMenuItem
+    {
+        NONE, Exit, ResetLogFilter,
+        Display,
+        IgnoreByUrl, IgnoreByUserAgent, IgnoreByIP, IgnoreByHost
+    }
+
+
     internal class FailedRequestDisplay
     {
-        IFailedReqLogItem[] logs;
+        IFailedReqLogItem[] loadedLogs;
         internal FailedRequestDisplay(string dir)
         {
             //load all of the xml files
             var files = Directory.GetFiles(dir, "*.xml");
-            logs = new IFailedReqLogItem[files.Length];
+            loadedLogs = new IFailedReqLogItem[files.Length];
             for(int i = 0; i < files.Length; i++)
             {
-                logs[i] = FailedReqLogItem.LoadFailedReq(files[i]);
+                loadedLogs[i] = FailedReqLogItem.LoadFailedReq(files[i]);
             }
         }
 
         internal void Display()
         {
+            IEnumerable<IFailedReqLogItem> currentLogFilter = loadedLogs.AsEnumerable();
             while (true)
             {
                 var option = DisplayMenu();
@@ -33,29 +41,33 @@ namespace returnzork.IIS_Log_Parser
                     case FailedRequestMenuItem.Exit:
                         return;
 
+                    case FailedRequestMenuItem.ResetLogFilter:
+                        currentLogFilter = loadedLogs.AsEnumerable();
+                        break;
+
                     case FailedRequestMenuItem.Display:
-                        DisplayLogs();
+                        DisplayLogs(currentLogFilter);
                         break;
 
                     case FailedRequestMenuItem.IgnoreByUrl:
-                        IgnoreByUrl();
+                        IgnoreByUrl(ref currentLogFilter);
                         break;
                     case FailedRequestMenuItem.IgnoreByUserAgent:
-                        IgnoreByUserAgent();
+                        IgnoreByUserAgent(ref currentLogFilter);
                         break;
 
                     case FailedRequestMenuItem.IgnoreByIP:
-                        IgnoreByIP();
+                        IgnoreByIP(ref currentLogFilter);
                         break;
 
                     case FailedRequestMenuItem.IgnoreByHost:
-                        IgnoreByHost();
+                        IgnoreByHost(ref currentLogFilter);
                         break;
                 }
             }
         }
 
-        private void DisplayLogs()
+        private void DisplayLogs(IEnumerable<IFailedReqLogItem> logs)
         {
             foreach(var li in logs)
             {
@@ -67,36 +79,36 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
-        private void IgnoreByUrl()
+        private void IgnoreByUrl(ref IEnumerable<IFailedReqLogItem> logs)
         {
             Console.WriteLine("Enter url to ignore: ");
             string url = Console.ReadLine();
 
-            logs = logs.Where(x => x.Url != url).ToArray();
+            logs = logs.Where(x => x.Url != url);
         }
 
-        private void IgnoreByUserAgent()
+        private void IgnoreByUserAgent(ref IEnumerable<IFailedReqLogItem> logs)
         {
             Console.WriteLine("Enter user agent to ignore: ");
             string agent = Console.ReadLine();
 
-            logs = logs.Where(x => x.UserAgent != agent).ToArray();
+            logs = logs.Where(x => x.UserAgent != agent);
         }
 
-        private void IgnoreByIP()
+        private void IgnoreByIP(ref IEnumerable<IFailedReqLogItem> logs)
         {
             Console.WriteLine("Enter IP address to ignore: ");
             string ip = Console.ReadLine();
 
-            logs = logs.Where(x => x.RemoteAddress != ip).ToArray();
+            logs = logs.Where(x => x.RemoteAddress != ip);
         }
 
-        private void IgnoreByHost()
+        private void IgnoreByHost(ref IEnumerable<IFailedReqLogItem> logs)
         {
             Console.WriteLine("Enter host to ignore: ");
             string host = Console.ReadLine();
 
-            logs = logs.Where(x => x.Host != host).ToArray();
+            logs = logs.Where(x => x.Host != host);
         }
 
 
@@ -104,6 +116,7 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("-1 - Exit");
             Console.WriteLine("0 - Display");
+            Console.WriteLine("1 - Reset log filters");
             Console.WriteLine("4 - Add ignore by url");
             Console.WriteLine("44 - Add ignore by user agent");
             Console.WriteLine("444 - Add ignore by IP address");
@@ -121,6 +134,9 @@ namespace returnzork.IIS_Log_Parser
 
                 case 0:
                     return FailedRequestMenuItem.Display;
+
+                case 1:
+                    return FailedRequestMenuItem.ResetLogFilter;
 
                 case 4:
                     return FailedRequestMenuItem.IgnoreByUrl;
