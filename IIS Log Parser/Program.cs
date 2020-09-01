@@ -12,6 +12,7 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter a IIS Log file/directory to parse");
             string file = Console.ReadLine();
+            file = file.Replace("\"", "");
 
             if(!(File.Exists(file) || Directory.Exists(file)))
             {
