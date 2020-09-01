@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    enum FailedRequestMenuItem { NONE, Exit, IgnoreByUrl, IgnoreByUserAgent, Display, IgnoreByIP }
+    enum FailedRequestMenuItem { NONE, Exit, IgnoreByUrl, IgnoreByUserAgent, Display, IgnoreByIP, IgnoreByHost }
     internal class FailedRequestDisplay
     {
         IFailedReqLogItem[] logs;
@@ -46,6 +46,10 @@ namespace returnzork.IIS_Log_Parser
 
                     case FailedRequestMenuItem.IgnoreByIP:
                         IgnoreByIP();
+                        break;
+
+                    case FailedRequestMenuItem.IgnoreByHost:
+                        IgnoreByHost();
                         break;
                 }
             }
@@ -87,6 +91,14 @@ namespace returnzork.IIS_Log_Parser
             logs = logs.Where(x => x.RemoteAddress != ip).ToArray();
         }
 
+        private void IgnoreByHost()
+        {
+            Console.WriteLine("Enter host to ignore: ");
+            string host = Console.ReadLine();
+
+            logs = logs.Where(x => x.Host != host).ToArray();
+        }
+
 
         private FailedRequestMenuItem DisplayMenu()
         {
@@ -95,6 +107,7 @@ namespace returnzork.IIS_Log_Parser
             Console.WriteLine("4 - Add ignore by url");
             Console.WriteLine("44 - Add ignore by user agent");
             Console.WriteLine("444 - Add ignore by IP address");
+            Console.WriteLine("4444 - Add ignore by host");
 
             if(!int.TryParse(Console.ReadLine(), out int result))
             {
@@ -115,6 +128,8 @@ namespace returnzork.IIS_Log_Parser
                     return FailedRequestMenuItem.IgnoreByUserAgent;
                 case 444:
                     return FailedRequestMenuItem.IgnoreByIP;
+                case 4444:
+                    return FailedRequestMenuItem.IgnoreByHost;
 
                 default:
                     return FailedRequestMenuItem.NONE;
