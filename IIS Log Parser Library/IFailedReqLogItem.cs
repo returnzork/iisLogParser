@@ -12,6 +12,7 @@ namespace returnzork.IIS_Log_Parser
         string Url { get; }
         string Host { get; }
         int StatusCode { get; }
+        int StatusCodeSubCode { get; }
         string UserAgent { get; }
         FailedAction Action { get; }
         string ActionName { get; }

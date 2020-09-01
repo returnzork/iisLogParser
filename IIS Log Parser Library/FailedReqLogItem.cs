@@ -16,6 +16,7 @@ namespace returnzork.IIS_Log_Parser
         public string Url { get; }
         public string Host { get; }
         public int StatusCode { get; }
+        public int StatusCodeSubCode { get; }
         public string UserAgent { get; }
         public FailedAction Action { get; }
         public string ActionName { get; }
@@ -30,7 +31,15 @@ namespace returnzork.IIS_Log_Parser
             //load the document and traverse it
             XDocument doc = XDocument.Load(file);
             Url = doc.Root.Attribute("url").Value;
-            StatusCode = int.Parse(doc.Root.Attribute("statusCode").Value);
+            {
+                var statusCodeNode = doc.Root.Attribute("statusCode").Value;
+                var statusCodeSplit = statusCodeNode.Split('.');
+                StatusCode = int.Parse(statusCodeSplit[0]);
+                if (statusCodeSplit.Length == 2)
+                    StatusCodeSubCode = int.Parse(statusCodeSplit[1]);
+                else
+                    StatusCodeSubCode = 0;
+            }
 
 
             //Get the host and user agent from the Headers attribute

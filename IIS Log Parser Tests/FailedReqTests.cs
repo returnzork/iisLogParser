@@ -17,7 +17,8 @@ namespace returnzork.IIS_Log_Parser_Tests
             //path to log.xml
             //expected Url
             //expected host
-            //expected status code
+            //expected status code (eg 404.6 -> 404)
+            //expected sub status code (eg 404.6 -> 6)
             //expected UserAgent
             //expected Action
             //expected Action Name
@@ -28,7 +29,7 @@ namespace returnzork.IIS_Log_Parser_Tests
                 if (!File.Exists(lf))
                     Assert.Inconclusive("Test Log file not found");
                 string log, url, host, userAgent, action, actionname, remoteAddress;
-                int statusCode;
+                int statusCode, subStatusCode;
                 DateTime time;
 
                 using (StreamReader sr = new StreamReader(lf))
@@ -37,6 +38,7 @@ namespace returnzork.IIS_Log_Parser_Tests
                     url = sr.ReadLine();
                     host = sr.ReadLine();
                     statusCode = int.Parse(sr.ReadLine());
+                    subStatusCode = int.Parse(sr.ReadLine());
                     userAgent = sr.ReadLine();
                     action = sr.ReadLine();
                     actionname = sr.ReadLine();
@@ -51,6 +53,7 @@ namespace returnzork.IIS_Log_Parser_Tests
                 Assert.AreEqual(url, req.Url);
                 Assert.AreEqual(host, req.Host);
                 Assert.AreEqual(statusCode, req.StatusCode);
+                Assert.AreEqual(subStatusCode, req.StatusCodeSubCode);
                 Assert.AreEqual(userAgent, req.UserAgent);
                 Assert.AreEqual(action, req.Action.ToString());
                 Assert.AreEqual(actionname, req.ActionName);
