@@ -10,6 +10,8 @@ namespace returnzork.IIS_Log_Parser
     internal class LogDisplay
     {
         List<ILogItem> logs;
+        const string DEFAULTFORMAT = "%date% %ip% %method% %status% %path%";
+        string currentFormat = DEFAULTFORMAT;
 
 
         internal LogDisplay(List<ILogItem> logs)
@@ -64,7 +66,7 @@ namespace returnzork.IIS_Log_Parser
             {
                 foreach (var x in results)
                 {
-                    Console.WriteLine(x);
+                    Console.WriteLine(GetFormatting(x));
                 }
             }
             else
@@ -73,6 +75,30 @@ namespace returnzork.IIS_Log_Parser
             }
 
             Console.WriteLine();
+        }
+
+        
+        private string GetFormatting(ILogItem item)
+        {
+            //current replacement is
+            //%date% %ip% %method% %status% %path%
+
+            string output = currentFormat;
+
+            output = output.Replace("%date%", item.Time.ToString());
+            output = output.Replace("%ip%", item.ClientIpAddr);
+            output = output.Replace("%method%", item.HTTPVerb);
+            output = output.Replace("%status%", item.HTTPStatus.ToString());
+            output = output.Replace("%path%", item.Uri);
+
+            return output;
+        }
+
+
+
+        internal void ChangeFormat()
+        {
+            throw new NotImplementedException();
         }
     }
 }

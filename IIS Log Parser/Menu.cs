@@ -27,7 +27,9 @@ namespace returnzork.IIS_Log_Parser
         [Display(Name = "Show items that match an HTTP verb", Order = 2)]
         ShowHTTPVerb,
         [Display(Name = "Show items that match an HTTP status code", Order = 3)]
-        ShowStatusCode
+        ShowStatusCode,
+        [Display(Name = "Change display formatting", Order = 7)]
+        ChangeDisplayFormat
     }
 
     internal static class Menu
