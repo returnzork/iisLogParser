@@ -81,15 +81,24 @@ namespace returnzork.IIS_Log_Parser
         private string GetFormatting(ILogItem item)
         {
             //current replacement is
-            //%date% %ip% %method% %status% %path%
+            //%date% %ip% %method% %status% %path% %serverip% %query% %port% %username% %useragent% %referer% %substatus% %winstatus% %taken%
 
             string output = currentFormat;
 
             output = output.Replace("%date%", item.Time.ToString());
-            output = output.Replace("%ip%", item.ClientIpAddr);
+            output = output.Replace("%serverip%", item.ServerIpAddr);
             output = output.Replace("%method%", item.HTTPVerb);
-            output = output.Replace("%status%", item.HTTPStatus.ToString());
             output = output.Replace("%path%", item.Uri);
+            output = output.Replace("%query%", item.Query);
+            output = output.Replace("%port%", item.Port.ToString());
+            output = output.Replace("%username%", item.Username);
+            output = output.Replace("%ip%", item.ClientIpAddr);
+            output = output.Replace("%useragent%", item.UserAgent);
+            output = output.Replace("%referer%", item.Referer);
+            output = output.Replace("%status%", item.HTTPStatus.ToString());
+            output = output.Replace("%substatus%", item.HTTPSubStatus.ToString());
+            output = output.Replace("%winstatus%", item.WindowsStatus);
+            output = output.Replace("%taken%", item.TimeTaken.ToString());
 
             return output;
         }
