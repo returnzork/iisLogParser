@@ -10,6 +10,8 @@ namespace returnzork.IIS_Log_Parser
     internal class LogDisplay
     {
         List<ILogItem> logs;
+        const string DEFAULTFORMAT = "%date% %ip% %method% %status% %path%";
+        string currentFormat = DEFAULTFORMAT;
 
 
         internal LogDisplay(List<ILogItem> logs)
@@ -64,7 +66,7 @@ namespace returnzork.IIS_Log_Parser
             {
                 foreach (var x in results)
                 {
-                    Console.WriteLine(x);
+                    Console.WriteLine(GetFormatting(x));
                 }
             }
             else
@@ -73,6 +75,48 @@ namespace returnzork.IIS_Log_Parser
             }
 
             Console.WriteLine();
+        }
+
+        
+        private string GetFormatting(ILogItem item)
+        {
+            //current replacement is
+            //%date% %ip% %method% %status% %path% %serverip% %query% %port% %username% %useragent% %referer% %substatus% %winstatus% %taken%
+
+            string output = currentFormat;
+
+            output = output.Replace("%date%", item.Time.ToString());
+            output = output.Replace("%serverip%", item.ServerIpAddr);
+            output = output.Replace("%method%", item.HTTPVerb);
+            output = output.Replace("%path%", item.Uri);
+            output = output.Replace("%query%", item.Query);
+            output = output.Replace("%port%", item.Port.ToString());
+            output = output.Replace("%username%", item.Username);
+            output = output.Replace("%ip%", item.ClientIpAddr);
+            output = output.Replace("%useragent%", item.UserAgent);
+            output = output.Replace("%referer%", item.Referer);
+            output = output.Replace("%status%", item.HTTPStatus.ToString());
+            output = output.Replace("%substatus%", item.HTTPSubStatus.ToString());
+            output = output.Replace("%winstatus%", item.WindowsStatus);
+            output = output.Replace("%taken%", item.TimeTaken.ToString());
+
+            return output;
+        }
+
+
+
+        internal void ChangeFormat()
+        {
+            Console.WriteLine("Current Format: ");
+            Console.WriteLine(currentFormat);
+            Console.WriteLine("Enter a new format: ");
+
+            string newFormat = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(newFormat))
+                Console.WriteLine("Bad format");
+            else
+                currentFormat = newFormat;
         }
     }
 }

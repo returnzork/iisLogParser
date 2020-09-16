@@ -27,7 +27,9 @@ namespace returnzork.IIS_Log_Parser
         [Display(Name = "Show items that match an HTTP verb", Order = 2)]
         ShowHTTPVerb,
         [Display(Name = "Show items that match an HTTP status code", Order = 3)]
-        ShowStatusCode
+        ShowStatusCode,
+        [Display(Name = "Change display formatting", Order = 7)]
+        ChangeDisplayFormat
     }
 
     internal static class Menu
@@ -42,7 +44,7 @@ namespace returnzork.IIS_Log_Parser
 
         internal static MenuEntry GetMenuEntry()
         {
-            if (!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44))
+            if (!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44 && result != 7))
             {
                 Console.WriteLine("Invalid entry");
                 return MenuEntry.NONE;
@@ -78,6 +80,10 @@ namespace returnzork.IIS_Log_Parser
                     return MenuEntry.ShowHTTPVerb;
                 case 3:
                     return MenuEntry.ShowStatusCode;
+
+
+                case 7:
+                    return MenuEntry.ChangeDisplayFormat;
 
                 default:
                     return MenuEntry.NONE;
