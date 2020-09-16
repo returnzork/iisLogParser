@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 
+using System.Linq;
+
 namespace returnzork.IIS_Log_Parser
 {
     internal enum MenuEntry
@@ -44,50 +46,25 @@ namespace returnzork.IIS_Log_Parser
 
         internal static MenuEntry GetMenuEntry()
         {
-            if (!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44 && result != 7))
+            //check the user put a number in
+            if(!int.TryParse(Console.ReadLine(), out int result))
             {
                 Console.WriteLine("Invalid entry");
                 return MenuEntry.NONE;
             }
+            
+            //check if the result that the user entered is an option labeled in the Order field of the MenuEntry enum
+            MenuEntry item = ((MenuEntry[])Enum.GetValues(typeof(MenuEntry))).First(x => x.GetOrder() == result);
 
-            switch (result)
+            //if the user entered the default option (display CANCEL/enum name NONE), that's not a valid option
+            if(item == default)
             {
-                case -1:
-                    return MenuEntry.Exit;
-
-
-                case 0:
-                    return MenuEntry.AddLogFile;
-
-                case 5:
-                    return MenuEntry.LoadFolder;
-
-
-                case 4:
-                    return MenuEntry.GlobalIgnore;
-
-                case 44:
-                    return MenuEntry.GlobalIgnoreFile;
-
-
-                case 1:
-                    return MenuEntry.ShowClientIp;
-                case 10:
-                    return MenuEntry.ShowNotClientIp;
-
-
-                case 2:
-                    return MenuEntry.ShowHTTPVerb;
-                case 3:
-                    return MenuEntry.ShowStatusCode;
-
-
-                case 7:
-                    return MenuEntry.ChangeDisplayFormat;
-
-                default:
-                    return MenuEntry.NONE;
+                Console.WriteLine("Invalid Entry");
+                return MenuEntry.NONE;
             }
+
+            //the user entered a valid menu option, return what it was
+            return item;            
         }
 
 
