@@ -98,7 +98,16 @@ namespace returnzork.IIS_Log_Parser
 
         internal void ChangeFormat()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Current Format: ");
+            Console.WriteLine(currentFormat);
+            Console.WriteLine("Enter a new format: ");
+
+            string newFormat = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(newFormat))
+                Console.WriteLine("Bad format");
+            else
+                currentFormat = newFormat;
         }
     }
 }
