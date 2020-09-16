@@ -1,27 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal enum MenuEntry { NONE, Exit, AddLogFile, LoadFolder, GlobalIgnore, GlobalIgnoreFile, ShowClientIp,
+    internal enum MenuEntry
+    {
+        [Display(Name = "CANCEL", Order = -5)]
+        NONE,
+        [Display(Name = "Exit the program", Order = -1)]
+        Exit,
+        [Display(Name = "Load a log file to what is already loaded", Order = 0)]
+        AddLogFile,
+        [Display(Name = "Load a new log folder, replacing what is already loaded", Order = 5)]
+        LoadFolder,
+        [Display(Name = "Add an ip to the global ignore", Order = 4)]
+        GlobalIgnore,
+        [Display(Name = "Add an ip text document to the global ignore", Order = 44)]
+        GlobalIgnoreFile,
+        [Display(Name = "Show items that match a client ip address", Order = 1)]
+        ShowClientIp,
+        [Display(Name = "Show items that do not match a client ip address", Order = 10)]
         ShowNotClientIp,
+        [Display(Name = "Show items that match an HTTP verb", Order = 2)]
         ShowHTTPVerb,
+        [Display(Name = "Show items that match an HTTP status code", Order = 3)]
         ShowStatusCode
     }
+
     internal static class Menu
     {
         internal static void DisplayMenu()
         {
-            Console.WriteLine("0 - Load a log file to what is already loaded");
-            Console.WriteLine("5 - Load folder of log files, removing what is already loaded");
-            Console.WriteLine("1 - Show items by client ip address");
-            Console.WriteLine("10 - Show items not matching client ip address");
-            Console.WriteLine("2 - Show items by HTTP verb");
-            Console.WriteLine("3 - Match by status code");
-            Console.WriteLine("4 - Add global ignore");
-            Console.WriteLine("44 - Load global ignore file");
-            Console.WriteLine("-1 - Exit Program");
+            foreach(MenuEntry e in Enum.GetValues(typeof(MenuEntry)))
+            {
+                Console.WriteLine(e.GetOrder() + " - "  + e.GetDisplayName());
+            }
         }
 
         internal static MenuEntry GetMenuEntry()
@@ -66,6 +82,25 @@ namespace returnzork.IIS_Log_Parser
                 default:
                     return MenuEntry.NONE;
             }
+        }
+
+
+        public static string GetDisplayName(this MenuEntry me)
+        {
+            var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+            if (attribute == null)
+                return me.ToString();
+            else
+                return attribute.Name;
+        }
+
+        public static int GetOrder(this MenuEntry me)
+        {
+            var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+            if (attribute == null)
+                return Int32.MinValue;
+            else
+                return attribute.Order;
         }
     }
 }
