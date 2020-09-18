@@ -12,7 +12,7 @@ namespace returnzork.IIS_Log_Parser_Tests
         public void LoadLogFile()
         {
             //get the log files to test
-            string[] LOGFILES = Directory.GetFiles(Environment.CurrentDirectory, "log*.txt");
+            string[] LOGFILES = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "..", "..", "..", "TESTFILES"), "log*.txt");
             //log file format:
             //path to log.xml
             //expected Url
