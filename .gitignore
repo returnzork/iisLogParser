@@ -12,6 +12,7 @@
 
 #log files for unit testing
 [Ll]og*.txt
+TESTFILES/
 
 
 
