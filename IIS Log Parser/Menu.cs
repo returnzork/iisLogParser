@@ -1,71 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Text;
+
+using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal enum MenuEntry { NONE, Exit, AddLogFile, LoadFolder, GlobalIgnore, GlobalIgnoreFile, ShowClientIp,
+    internal enum MenuEntry
+    {
+        [Display(Name = "CANCEL", Order = -5)]
+        NONE,
+        [Display(Name = "Exit the program", Order = -1)]
+        Exit,
+        [Display(Name = "Load a log file to what is already loaded", Order = 0)]
+        AddLogFile,
+        [Display(Name = "Load a new log folder, replacing what is already loaded", Order = 5)]
+        LoadFolder,
+        [Display(Name = "Add an ip to the global ignore", Order = 4)]
+        GlobalIgnore,
+        [Display(Name = "Add an ip text document to the global ignore", Order = 44)]
+        GlobalIgnoreFile,
+        [Display(Name = "Show items that match a client ip address", Order = 1)]
+        ShowClientIp,
+        [Display(Name = "Show items that do not match a client ip address", Order = 10)]
         ShowNotClientIp,
+        [Display(Name = "Show items that match an HTTP verb", Order = 2)]
         ShowHTTPVerb,
-        ShowStatusCode
+        [Display(Name = "Show items that match an HTTP status code", Order = 3)]
+        ShowStatusCode,
+        [Display(Name = "Change display formatting", Order = 7)]
+        ChangeDisplayFormat
     }
+
     internal static class Menu
     {
         internal static void DisplayMenu()
         {
-            Console.WriteLine("0 - Load a log file to what is already loaded");
-            Console.WriteLine("5 - Load folder of log files, removing what is already loaded");
-            Console.WriteLine("1 - Show items by client ip address");
-            Console.WriteLine("10 - Show items not matching client ip address");
-            Console.WriteLine("2 - Show items by HTTP verb");
-            Console.WriteLine("3 - Match by status code");
-            Console.WriteLine("4 - Add global ignore");
-            Console.WriteLine("44 - Load global ignore file");
-            Console.WriteLine("-1 - Exit Program");
+            foreach(MenuEntry e in Enum.GetValues(typeof(MenuEntry)))
+            {
+                Console.WriteLine(e.GetOrder() + " - "  + e.GetDisplayName());
+            }
         }
 
         internal static MenuEntry GetMenuEntry()
         {
-            if (!int.TryParse(Console.ReadLine(), out int result) || result < -1 || (result > 5 && result != 10 && result != 100 && result != 1000 && result != 44))
+            //check the user put a number in
+            if(!int.TryParse(Console.ReadLine(), out int result))
             {
                 Console.WriteLine("Invalid entry");
                 return MenuEntry.NONE;
             }
+            
+            //check if the result that the user entered is an option labeled in the Order field of the MenuEntry enum
+            MenuEntry item = ((MenuEntry[])Enum.GetValues(typeof(MenuEntry))).First(x => x.GetOrder() == result);
 
-            switch (result)
+            //if the user entered the default option (display CANCEL/enum name NONE), that's not a valid option
+            if(item == default)
             {
-                case -1:
-                    return MenuEntry.Exit;
-
-
-                case 0:
-                    return MenuEntry.AddLogFile;
-
-                case 5:
-                    return MenuEntry.LoadFolder;
-
-
-                case 4:
-                    return MenuEntry.GlobalIgnore;
-
-                case 44:
-                    return MenuEntry.GlobalIgnoreFile;
-
-
-                case 1:
-                    return MenuEntry.ShowClientIp;
-                case 10:
-                    return MenuEntry.ShowNotClientIp;
-
-
-                case 2:
-                    return MenuEntry.ShowHTTPVerb;
-                case 3:
-                    return MenuEntry.ShowStatusCode;
-
-                default:
-                    return MenuEntry.NONE;
+                Console.WriteLine("Invalid Entry");
+                return MenuEntry.NONE;
             }
+
+            //the user entered a valid menu option, return what it was
+            return item;            
+        }
+
+
+        public static string GetDisplayName(this MenuEntry me)
+        {
+            var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+            if (attribute == null)
+                return me.ToString();
+            else
+                return attribute.Name;
+        }
+
+        public static int GetOrder(this MenuEntry me)
+        {
+            var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+            if (attribute == null)
+                return Int32.MinValue;
+            else
+                return attribute.Order;
         }
     }
 }

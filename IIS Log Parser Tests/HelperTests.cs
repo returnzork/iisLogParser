@@ -49,5 +49,26 @@ namespace returnzork.IIS_Log_Parser_Tests
             const string INVALID = "[]";
             Assert.IsFalse(Helper.IpSplit(INVALID, out _));
         }
+
+
+        [TestMethod]
+        public void IpSplitFixFormatSuccessTest()
+        {
+            const string VALID1 = "127.0.0.1";
+            Assert.IsTrue(Helper.IpSplit(VALID1, out string[] result1));
+            Assert.AreEqual(1, result1.Length);
+            Assert.AreEqual("127.0.0.1", result1[0]);
+
+
+            const string VALID2 = "[127.0.0.1";
+            Assert.IsTrue(Helper.IpSplit(VALID2, out string[] result2));
+            Assert.AreEqual(1, result2.Length);
+            Assert.AreEqual("127.0.0.1", result2[0]);
+
+            const string VALID3 = "127.0.0.1]";
+            Assert.IsTrue(Helper.IpSplit(VALID3, out string[] result3));
+            Assert.AreEqual(1, result3.Length);
+            Assert.AreEqual("127.0.0.1", result3[0]);
+        }
     }
 }

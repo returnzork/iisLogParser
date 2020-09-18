@@ -66,6 +66,10 @@ namespace returnzork.IIS_Log_Parser
                     case MenuEntry.ShowStatusCode:
                         display.ShowByStatusCode();
                         break;
+
+                    case MenuEntry.ChangeDisplayFormat:
+                        display.ChangeFormat();
+                        break;
                 }
             }
             while (entry != MenuEntry.Exit && !shouldExit);
@@ -114,7 +118,7 @@ namespace returnzork.IIS_Log_Parser
 
         private void AddGlobalIgnore()
         {
-            Console.WriteLine("Enter [ip, address] to ignore (MINIMUM 2 ENTRIES):");
+            Console.WriteLine("Enter [ip, address] to ignore:");
             string arr = Console.ReadLine();
             if (!Helper.IpSplit(arr, out string[] split))
             {

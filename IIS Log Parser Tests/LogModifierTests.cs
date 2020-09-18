@@ -62,7 +62,8 @@ namespace returnzork.IIS_Log_Parser_Tests
             Assert.AreEqual(4, result.Count());
 
             //check the error handling
-            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleClientIp(logs, "[bad format"));
+            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleClientIp(logs, "[127.0.0.1, 127.0.0.3"));
+            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleClientIp(logs, "127.0.0.1, 127.0.0.3]"));
         }
 
         [TestMethod]
@@ -81,7 +82,8 @@ namespace returnzork.IIS_Log_Parser_Tests
             Assert.AreEqual(9, result.Count());
 
             //check the error handling
-            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleNotClientIp(logs, "[bad format"));
+            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleNotClientIp(logs, "[127.0.0.1, 127.0.0.55"));
+            Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleNotClientIp(logs, "127.0.0.1, 127.0.0.55]"));
         }
 
         [TestMethod]

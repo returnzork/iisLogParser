@@ -17,11 +17,28 @@ namespace returnzork.IIS_Log_Parser
                 result = null;
                 return false;
             }
-            //check format, must start with [ end with ]
-            if (arr[0] != '[' || arr[arr.Length - 1] != ']' || arr.Length == 2)
+            else if(arr.Length == 2 && arr[0] == '[' && arr[1] == ']')
             {
                 result = null;
                 return false;
+            }
+
+            //check format must contain brackets
+            if(arr[0] != '[' || arr[arr.Length - 1] != ']')
+            {
+                //a bracket is missing. We will try to fix the format only if there is a single address listed (no comma)
+
+                //there is a comma. We will not try to fix it
+                if(arr.Contains(','))
+                {
+                    result = null;
+                    return false;
+                }
+                //attempt to fix the format
+                if (arr[0] != '[')
+                    arr = '[' + arr;
+                if (arr[arr.Length - 1] != ']')
+                    arr = arr + ']';
             }
 
             //remove the start and end bracked
