@@ -34,6 +34,12 @@ namespace returnzork.IIS_Log_Parser_Tests
             {
                 logs.Add(LogItemMock.GetGenericLog("127.0.0.55", "TEST", 404));
             }
+
+            //5 sets of 127.0.0.99 OTHER 777, URI=/Test/Path/TestLogFile
+            for(int i = 0; i < 5; i++)
+            {
+                logs.Add(LogItemMock.GetGenericLog("127.0.0.99", "OTHER", 777, "/Test/Path/"));
+            }
         }
 
 
@@ -49,9 +55,9 @@ namespace returnzork.IIS_Log_Parser_Tests
         [TestMethod]
         public void GetByNotClientIp()
         {
-            //get all results of NOT 127.0.0.55 -> 15 items added - 5 of 127.0.0.55 = 10 matches
+            //get all results of NOT 127.0.0.55 -> 20 items added - 5 of 127.0.0.55 = 15 matches
             IEnumerable<ILogItem> result = LogModifier.GetByNotClientIp(logs, "127.0.0.55");
-            Assert.AreEqual(10, result.Count());
+            Assert.AreEqual(15, result.Count());
         }
 
         [TestMethod]
@@ -77,9 +83,9 @@ namespace returnzork.IIS_Log_Parser_Tests
         [TestMethod]
         public void GetByMultipleNotClientIp()
         {
-            //get matches of not [127.0.0.1, 127.0.0.55] = 15 - 1 [127.0.0.1] - 5 [127.0.0.55] = 9 matches
+            //get matches of not [127.0.0.1, 127.0.0.55] = 20 - 1 **[127.0.0.1]** - 5 **[127.0.0.55]** = 14 matches
             IEnumerable<ILogItem> result = LogModifier.GetByMultipleNotClientIp(logs, "[127.0.0.1, 127.0.0.55]");
-            Assert.AreEqual(9, result.Count());
+            Assert.AreEqual(14, result.Count());
 
             //check the error handling
             Assert.ThrowsException<FormatException>(() => LogModifier.GetByMultipleNotClientIp(logs, "[127.0.0.1, 127.0.0.55"));
@@ -89,9 +95,9 @@ namespace returnzork.IIS_Log_Parser_Tests
         [TestMethod]
         public void GetByMultipleNotClientIpSingleEntry()
         {
-            //call get multiple not with only 1 ip specified, [127.0.0.1] = 14 matches
+            //call get multiple not with only 1 ip specified, [127.0.0.1] = 19 matches
             IEnumerable<ILogItem> result = LogModifier.GetByMultipleNotClientIp(logs, "[127.0.0.1]");
-            Assert.AreEqual(14, result.Count());
+            Assert.AreEqual(19, result.Count());
         }
 
         [TestMethod]

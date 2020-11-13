@@ -10,16 +10,18 @@ namespace returnzork.IIS_Log_Parser_Tests.Mocks
     {
         static Type logItemType;
 
-        internal static ILogItem GetGenericLog(string clientIp, string verb, int status)
+        internal static ILogItem GetGenericLog(string clientIp, string verb, int status, string path = "")
         {
             if(logItemType == null)
                 logItemType = Type.GetType("returnzork.IIS_Log_Parser.LogItem, IIS Log Parser");
 
+            if (path.EndsWith('/'))
+                path = path.Substring(0, path.Length - 1);
 
             DateTime Time = DateTime.Now;
             string ServerIpAddr = "127.0.0.1";
             string HTTPVerb = verb;
-            string Uri = "/TestLogFile.txt";
+            string Uri = path + "/TestLogFile.txt";
             string Query = "X-ARR-CACHE-HIT=";
             int Port = 80;
             string Username = "testuser";
