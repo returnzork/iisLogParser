@@ -40,5 +40,54 @@ namespace returnzork.IIS_Log_Parser
         {
             return logs.Where(x => x.HTTPStatus == statusCode);
         }
+
+        public static IEnumerable<ILogItem> GetByPath(List<ILogItem> logs, string path)
+        {
+            foreach(ILogItem item in logs)
+            {
+                //get the various components of the path
+                string uri = item.Uri;
+                string[] split = uri.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                //each index is a part of the path (hopefully we never have a non-html-escaped '/' character)
+                //final index is always the file that was accessed? (TODO CHECK THIS)
+
+                //iterate over the path that was specified to see if this matches
+                bool matches = false;
+                if (split.Length == 1)
+                {
+                    //we are in the root dir
+                    //did we specify root?
+                    if (path == "/")
+                        matches = true;
+                }
+                else
+                {
+                    //split the path we specified to match
+                    string[] matchIn = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                    //if they do not have the same amount of directory components, they cannot match
+                    if (matchIn.Length == split.Length - 1)
+                    {
+                        //set that it probably is a match
+                        matches = true;
+                        //iterate over each portion, if it doesn't match, set so, and exit
+                        for (int i = 0; i < split.Length - 1; i++)
+                        {
+                            if (split[i] != matchIn[i])
+                            {
+                                matches = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //if this was a match, return it
+                if(matches)
+                {
+                    yield return item;
+                }    
+            }
+        }
     }
 }

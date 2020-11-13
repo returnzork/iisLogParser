@@ -130,5 +130,25 @@ namespace returnzork.IIS_Log_Parser_Tests
             IEnumerable<ILogItem> result404 = LogModifier.GetByStatusCode(logs, 404);
             Assert.AreEqual(5, result404.Count());
         }
+
+        [TestMethod]
+        public void GetByPath()
+        {
+            //20 total items
+            //15 items have uri of /TestLogFile.txt
+            //5 have /Test/Path/TestLogFile.txt
+
+            //match root only, gives 15 items
+            IEnumerable<ILogItem> result = LogModifier.GetByPath(logs, "/");
+            Assert.AreEqual(15, result.Count());
+
+            //match /Test/Path/, gives 5 items
+            result = LogModifier.GetByPath(logs, "/Test/Path/");
+            Assert.AreEqual(5, result.Count());
+
+            //match /Test/, gives 0 items
+            result = LogModifier.GetByPath(logs, "/Test/");
+            Assert.AreEqual(0, result.Count());
+        }
     }
 }
