@@ -159,5 +159,28 @@ namespace returnzork.IIS_Log_Parser_Tests
             IEnumerable<ILogItem> result = LogModifier.GetByPath(logs, "/Test/*");
             Assert.AreEqual(5, result.Count());
         }
+
+        [TestMethod]
+        public void GetByPathRootWildcard()
+        {
+            //add an additional 1 item that we remove
+            ILogItem temp = LogItemMock.GetGenericLog("127.1.1.1", "REMOVE", 1, "/", "");
+            logs.Add(temp);
+
+
+            //5 items
+            IEnumerable<ILogItem> result = LogModifier.GetByPath(logs, "/Test/*");
+            Assert.AreEqual(5, result.Count());
+
+
+            //21 item, a root wildcard currently returns ALL items across the log file
+            //TODO change how wildcards on root work
+            result = LogModifier.GetByPath(logs, "/*");
+            Assert.AreEqual(21, result.Count());
+
+
+            //cleanup the temp log item we used
+            logs.Remove(temp);
+        }
     }
 }

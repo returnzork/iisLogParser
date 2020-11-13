@@ -48,6 +48,14 @@ namespace returnzork.IIS_Log_Parser
                 //get the various components of the path
                 string uri = item.Uri;
                 string[] split = uri.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                //if split length is 0, the root directory with no file was accessed
+                //if we are not matching the root directory (with or without wildcards), we can skip this
+                if(split.Length == 0)
+                {
+                    if (path != "/" && path != "/*")
+                        continue;
+                }
                 //each index is a part of the path (hopefully we never have a non-html-escaped '/' character)
                 //final index is always the file that was accessed? (TODO CHECK THIS)
 
@@ -57,7 +65,7 @@ namespace returnzork.IIS_Log_Parser
                 {
                     //we are in the root dir
                     //did we specify root?
-                    if (path == "/")
+                    if (path == "/" || path == "/*")
                         matches = true;
                 }
                 else
