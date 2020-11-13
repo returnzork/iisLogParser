@@ -31,7 +31,9 @@ namespace returnzork.IIS_Log_Parser
         [Display(Name = "Show items that match an HTTP status code", Order = 3)]
         ShowStatusCode,
         [Display(Name = "Change display formatting", Order = 7)]
-        ChangeDisplayFormat
+        ChangeDisplayFormat,
+        [Display(Name = "Show items matching a path", Order = 8)]
+        ShowByPath
     }
 
     internal static class Menu

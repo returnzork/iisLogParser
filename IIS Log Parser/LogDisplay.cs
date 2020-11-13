@@ -57,6 +57,13 @@ namespace returnzork.IIS_Log_Parser
             Display(LogModifier.GetByStatusCode(logs, code));
         }
 
+        internal void ShowByPath()
+        {
+            Console.WriteLine("Enter path to match: ");
+            string path = Console.ReadLine();
+            Display(LogModifier.GetByPath(logs, path));
+        }
+
 
         private void Display(IEnumerable<ILogItem> results)
         {

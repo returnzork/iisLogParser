@@ -70,6 +70,10 @@ namespace returnzork.IIS_Log_Parser
                     case MenuEntry.ChangeDisplayFormat:
                         display.ChangeFormat();
                         break;
+
+                    case MenuEntry.ShowByPath:
+                        display.ShowByPath();
+                        break;
                 }
             }
             while (entry != MenuEntry.Exit && !shouldExit);
