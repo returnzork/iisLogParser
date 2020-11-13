@@ -66,13 +66,18 @@ namespace returnzork.IIS_Log_Parser
                     string[] matchIn = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
                     //if they do not have the same amount of directory components, they cannot match
-                    if (matchIn.Length == split.Length - 1)
+                    if (matchIn.Length == split.Length - 1 || matchIn[matchIn.Length - 1] == "*")
                     {
                         //set that it probably is a match
                         matches = true;
                         //iterate over each portion, if it doesn't match, set so, and exit
                         for (int i = 0; i < split.Length - 1; i++)
                         {
+                            if(i == matchIn.Length - 1 && matchIn[i] == "*")
+                            {
+                                //wildcard match, it does match so exit
+                                break;
+                            }
                             if (split[i] != matchIn[i])
                             {
                                 matches = false;

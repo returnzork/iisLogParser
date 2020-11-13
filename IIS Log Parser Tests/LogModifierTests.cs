@@ -150,5 +150,14 @@ namespace returnzork.IIS_Log_Parser_Tests
             result = LogModifier.GetByPath(logs, "/Test/");
             Assert.AreEqual(0, result.Count());
         }
+
+        [TestMethod]
+        public void GetByPathWildcard()
+        {
+            //20 items total, get 5 of them with wildcard
+
+            IEnumerable<ILogItem> result = LogModifier.GetByPath(logs, "/Test/*");
+            Assert.AreEqual(5, result.Count());
+        }
     }
 }
