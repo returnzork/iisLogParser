@@ -7,17 +7,61 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal class LogDisplay
+    internal class LogDisplay : ILogDisplay
     {
         List<ILogItem> logs;
         const string DEFAULTFORMAT = "%date% %ip% %method% %status% %path%";
         string currentFormat = DEFAULTFORMAT;
 
-
         internal LogDisplay(List<ILogItem> logs)
         {
             this.logs = logs;
         }
+
+
+
+        public void ShowMenu()
+        {
+            Menu.DisplayMenu();
+        }
+        
+        public MenuEntry GetMenuItem()
+        {
+            return Menu.GetMenuEntry();
+        }
+
+        public void ConsumeMenuItem(MenuEntry item)
+        {
+            switch (item)
+            {
+                case MenuEntry.ShowClientIp:
+                    ShowByClientIp();
+                    break;
+                case MenuEntry.ShowNotClientIp:
+                    ShowByNotClientIp();
+                    break;
+
+
+                case MenuEntry.ShowHTTPVerb:
+                    ShowByHTTPVerb();
+                    break;
+                case MenuEntry.ShowStatusCode:
+                    ShowByStatusCode();
+                    break;
+
+                case MenuEntry.ChangeDisplayFormat:
+                    ChangeFormat();
+                    break;
+
+                case MenuEntry.ShowByPath:
+                    ShowByPath();
+                    break;
+            }
+        }
+
+
+
+
 
         internal void ShowByClientIp()
         {

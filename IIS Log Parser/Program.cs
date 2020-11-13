@@ -48,7 +48,7 @@ namespace returnzork.IIS_Log_Parser
             }
 
             Console.WriteLine($"There were a total of {parsed.Count} log entries");
-            Logic l = new Logic(parsed);
+            Logic<ILogItem> l = new Logic<ILogItem>(parsed);
             l.Run();
         }
 

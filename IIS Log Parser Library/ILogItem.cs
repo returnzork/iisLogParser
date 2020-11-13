@@ -4,9 +4,8 @@ using System.Text;
 
 namespace returnzork.IIS_Log_Parser
 {
-    public interface ILogItem
+    public interface ILogItem : ILog
     {
-        bool IsValid { get; }
         DateTime Time { get; }
         string ServerIpAddr { get; }
         string HTTPVerb { get; }

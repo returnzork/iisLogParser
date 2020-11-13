@@ -7,18 +7,23 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    internal class Logic
+    internal class Logic<T> : ILogic where T : ILog
     {
-        private List<ILogItem> logs;
-        private LogDisplay display;
+        private List<T> logs;
+        private ILogDisplay display;
 
-        internal Logic(List<ILogItem> logs)
+        internal Logic(List<T> logs)
         {
             this.logs = logs;
-            display = new LogDisplay(logs);
+            if (logs is List<ILogItem> ili)
+            {
+                display = new LogDisplay(ili);
+            }
+            else
+                throw new NotImplementedException();
         }
 
-        internal void Run()
+        public void Run()
         {
             //setup requirements
             MenuEntry entry;
@@ -28,9 +33,8 @@ namespace returnzork.IIS_Log_Parser
             //run the menu
             do
             {
-                Menu.DisplayMenu();
-                entry = Menu.GetMenuEntry();
-
+                display.ShowMenu();
+                entry = display.GetMenuItem();
                 switch (entry)
                 {
                     case MenuEntry.Exit:
@@ -52,27 +56,9 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
 
-                    case MenuEntry.ShowClientIp:
-                        display.ShowByClientIp();
-                        break;
-                    case MenuEntry.ShowNotClientIp:
-                        display.ShowByNotClientIp();
-                        break;
 
-
-                    case MenuEntry.ShowHTTPVerb:
-                        display.ShowByHTTPVerb();
-                        break;
-                    case MenuEntry.ShowStatusCode:
-                        display.ShowByStatusCode();
-                        break;
-
-                    case MenuEntry.ChangeDisplayFormat:
-                        display.ChangeFormat();
-                        break;
-
-                    case MenuEntry.ShowByPath:
-                        display.ShowByPath();
+                    default:
+                        display.ConsumeMenuItem(entry);
                         break;
                 }
             }
@@ -106,16 +92,18 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
-                            System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
+                            System.Diagnostics.Debugger.Break();
+                            /*System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                             {
                                 if (res.Contains(logArray[i]?.ClientIpAddr))
                                     logArray[i] = default;
-                            });
+                            });*/
                         }
                     }
 
-                    logs = logArray.Where(x => x != null && x.IsValid).ToList();
-                    display = new LogDisplay(logs);
+                    System.Diagnostics.Debugger.Break();
+                    //logs = logArray.Where(x => x != null && x.IsValid).ToList();
+                    //display = new LogDisplay(logs);
                 }
             }
         }
@@ -132,14 +120,17 @@ namespace returnzork.IIS_Log_Parser
             {
                 for (int i = logs.Count - 1; i >= 0; i--)
                 {
-                    if (split.Contains(logs[i].ClientIpAddr))
-                        logs.RemoveAt(i);
+                    System.Diagnostics.Debugger.Break();
+                    //if (split.Contains(logs[i].ClientIpAddr))
+                    //    logs.RemoveAt(i);
                 }
             }
         }
 
         private void LoadLogFolder()
         {
+            throw new NotImplementedException();
+            /*
             Console.WriteLine("Enter folder to load from");
             string dir = Console.ReadLine();
             if (!Directory.Exists(dir))
@@ -150,7 +141,7 @@ namespace returnzork.IIS_Log_Parser
             {
                 logs = Program.LoadDirectory(dir);
                 display = new LogDisplay(logs);
-            }
+            }*/
         }
 
         private void AddLogFile()
@@ -163,8 +154,9 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                logs.AddRange(Program.ParseLines(Program.ReadFile(newFile)));
-                display = new LogDisplay(logs);
+                System.Diagnostics.Debugger.Break();
+                //logs.AddRange(Program.ParseLines(Program.ReadFile(newFile)));
+                //display = new LogDisplay(logs);
             }
         }
     }
