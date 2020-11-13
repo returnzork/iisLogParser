@@ -92,7 +92,7 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
-                            System.Diagnostics.Debugger.Break();
+                            throw new NotImplementedException();
                             /*System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                             {
                                 if (res.Contains(logArray[i]?.ClientIpAddr))
@@ -101,7 +101,7 @@ namespace returnzork.IIS_Log_Parser
                         }
                     }
 
-                    System.Diagnostics.Debugger.Break();
+                    throw new NotImplementedException();
                     //logs = logArray.Where(x => x != null && x.IsValid).ToList();
                     //display = new LogDisplay(logs);
                 }
@@ -120,7 +120,7 @@ namespace returnzork.IIS_Log_Parser
             {
                 for (int i = logs.Count - 1; i >= 0; i--)
                 {
-                    System.Diagnostics.Debugger.Break();
+                    throw new NotImplementedException();
                     //if (split.Contains(logs[i].ClientIpAddr))
                     //    logs.RemoveAt(i);
                 }
@@ -154,7 +154,7 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                System.Diagnostics.Debugger.Break();
+                throw new NotImplementedException();
                 //logs.AddRange(Program.ParseLines(Program.ReadFile(newFile)));
                 //display = new LogDisplay(logs);
             }
