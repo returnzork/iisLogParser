@@ -129,8 +129,6 @@ namespace returnzork.IIS_Log_Parser
 
         private void LoadLogFolder()
         {
-            throw new NotImplementedException();
-            /*
             Console.WriteLine("Enter folder to load from");
             string dir = Console.ReadLine();
             if (!Directory.Exists(dir))
@@ -139,9 +137,13 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                logs = Program.LoadDirectory(dir);
-                display = new LogDisplay(logs);
-            }*/
+                if (typeof(T) == typeof(ILogItem))
+                {
+                    logs = Program.LoadDirectory(dir) as List<T>;
+                }
+                else
+                    throw new NotImplementedException();
+            }
         }
 
         private void AddLogFile()
