@@ -92,18 +92,23 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
-                            throw new NotImplementedException();
-                            /*System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
+                            System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                             {
-                                if (res.Contains(logArray[i]?.ClientIpAddr))
-                                    logArray[i] = default;
-                            });*/
+                                if (typeof(T) == typeof(ILogItem))
+                                {
+                                    if (logArray[i] != null)
+                                    {
+                                        if (res.Contains((logArray[i] as ILogItem).ClientIpAddr))
+                                            logArray[i] = default;
+                                    }
+                                }
+                                else
+                                    throw new NotImplementedException();
+                            });
                         }
                     }
 
-                    throw new NotImplementedException();
-                    //logs = logArray.Where(x => x != null && x.IsValid).ToList();
-                    //display = new LogDisplay(logs);
+                    logs = logArray.Where(x => x != null && x.IsValid).ToList();
                 }
             }
         }
