@@ -120,9 +120,13 @@ namespace returnzork.IIS_Log_Parser
             {
                 for (int i = logs.Count - 1; i >= 0; i--)
                 {
-                    throw new NotImplementedException();
-                    //if (split.Contains(logs[i].ClientIpAddr))
-                    //    logs.RemoveAt(i);
+                    if (typeof(T) == typeof(ILogItem))
+                    {
+                        if (split.Contains((logs[i] as ILogItem).ClientIpAddr))
+                            logs.RemoveAt(i);
+                    }
+                    else
+                        throw new NotImplementedException();
                 }
             }
         }
