@@ -67,7 +67,9 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter ip address to match:");
             string ip = Console.ReadLine();
-            if (!ip.Contains(',') && ip[0] != '[')
+            if (string.IsNullOrEmpty(ip))
+                Console.WriteLine("Invalid Format");
+            else if (!ip.Contains(',') && ip[0] != '[')
                 Display(LogModifier.GetByClientIp(logs, ip));
             else
                 Display(LogModifier.GetByMultipleClientIp(logs, ip));
@@ -77,7 +79,9 @@ namespace returnzork.IIS_Log_Parser
         {
             Console.WriteLine("Enter IP to negate its lookup:");
             string ip = Console.ReadLine();
-            if (!ip.Contains(',') && ip[0] != '[')
+            if (string.IsNullOrEmpty(ip))
+                Console.WriteLine("Invalid Format");
+            else if (!ip.Contains(',') && ip[0] != '[')
                 Display(LogModifier.GetByNotClientIp(logs, ip));
             else
                 Display(LogModifier.GetByMultipleNotClientIp(logs, ip));
