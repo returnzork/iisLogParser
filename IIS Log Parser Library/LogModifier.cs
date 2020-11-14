@@ -74,7 +74,9 @@ namespace returnzork.IIS_Log_Parser
                     string[] matchIn = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
                     //if they do not have the same amount of directory components, they cannot match
-                    if (matchIn.Length == split.Length - 1 || matchIn[matchIn.Length - 1] == "*")
+                    //if the length does not match, but the last item is a wildcard, it can match
+                    //if the matchIn length is 0, that means we ONLY want items in the root
+                    if (matchIn.Length == split.Length - 1 || (matchIn.Length > 0 ? matchIn[matchIn.Length - 1] == "*" : false))
                     {
                         //set that it probably is a match
                         matches = true;
