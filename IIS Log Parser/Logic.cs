@@ -154,9 +154,13 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                throw new NotImplementedException();
-                //logs.AddRange(Program.ParseLines(Program.ReadFile(newFile)));
-                //display = new LogDisplay(logs);
+                if (typeof(T) == typeof(ILogItem))
+                {
+                    //we shouldn't need to reinitialize the Display, as a change to the List should be reflected
+                    (logs as List<ILogItem>).AddRange(Program.ParseLines(Program.ReadFile(newFile)));
+                }
+                else
+                    throw new NotImplementedException();
             }
         }
     }
