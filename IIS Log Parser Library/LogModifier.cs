@@ -46,7 +46,7 @@ namespace returnzork.IIS_Log_Parser
             foreach(ILogItem item in logs)
             {
                 //get the various components of the path
-                string uri = item.Uri;
+                string uri = item.Url;
                 string[] split = uri.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
                 //if split length is 0, the root directory with no file was accessed

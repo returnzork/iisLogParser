@@ -71,7 +71,7 @@ namespace returnzork.IIS_Log_Parser
         {
             foreach(var li in logs)
             {
-                Console.WriteLine(li.RemoteAddress + " - " + li.Time);
+                Console.WriteLine(li.ClientIpAddr + " - " + li.Time);
                 Console.WriteLine($"\t{li.Url}");
                 Console.WriteLine($"\t{li.UserAgent}");
                 Console.WriteLine($"\t{li.ActionName}");
@@ -100,7 +100,7 @@ namespace returnzork.IIS_Log_Parser
             Console.WriteLine("Enter IP address to ignore: ");
             string ip = Console.ReadLine();
 
-            logs = logs.Where(x => x.RemoteAddress != ip);
+            logs = logs.Where(x => x.ClientIpAddr != ip);
         }
 
         private void IgnoreByHost(ref IEnumerable<IFailedReqLogItem> logs)

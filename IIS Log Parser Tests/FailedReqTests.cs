@@ -52,12 +52,12 @@ namespace returnzork.IIS_Log_Parser_Tests
                 IFailedReqLogItem req = FailedReqLogItem.LoadFailedReq(log);
                 Assert.AreEqual(url, req.Url);
                 Assert.AreEqual(host, req.Host);
-                Assert.AreEqual(statusCode, req.StatusCode);
-                Assert.AreEqual(subStatusCode, req.StatusCodeSubCode);
+                Assert.AreEqual(statusCode, req.HTTPStatus);
+                Assert.AreEqual(subStatusCode, req.HTTPSubStatus);
                 Assert.AreEqual(userAgent, req.UserAgent);
                 Assert.AreEqual(action, req.Action.ToString());
                 Assert.AreEqual(actionname, req.ActionName);
-                Assert.AreEqual(remoteAddress, req.RemoteAddress);
+                Assert.AreEqual(remoteAddress, req.ClientIpAddr);
                 Assert.AreEqual(time, req.Time);
             }
         }

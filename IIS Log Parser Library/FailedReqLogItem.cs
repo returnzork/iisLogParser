@@ -15,14 +15,15 @@ namespace returnzork.IIS_Log_Parser
 
         public string Url { get; }
         public string Host { get; }
-        public int StatusCode { get; }
-        public int StatusCodeSubCode { get; }
+        public int HTTPStatus { get; }
+        public int HTTPSubStatus { get; }
         public string UserAgent { get; }
         public FailedAction Action { get; }
         public string ActionName { get; }
-        public string RemoteAddress { get; }
+        public string ClientIpAddr { get; }
 
         public DateTime Time { get; }
+        public bool IsValid { get; }
 
 
         private FailedReqLogItem(string file)
@@ -34,11 +35,11 @@ namespace returnzork.IIS_Log_Parser
             {
                 var statusCodeNode = doc.Root.Attribute("statusCode").Value;
                 var statusCodeSplit = statusCodeNode.Split('.');
-                StatusCode = int.Parse(statusCodeSplit[0]);
+                HTTPStatus = int.Parse(statusCodeSplit[0]);
                 if (statusCodeSplit.Length == 2)
-                    StatusCodeSubCode = int.Parse(statusCodeSplit[1]);
+                    HTTPSubStatus = int.Parse(statusCodeSplit[1]);
                 else
-                    StatusCodeSubCode = 0;
+                    HTTPSubStatus = 0;
             }
 
 
@@ -82,10 +83,13 @@ namespace returnzork.IIS_Log_Parser
             }
 
             //get the remote address from the RemoteAddress attribute
-            RemoteAddress = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;
+            ClientIpAddr = doc.Root.Descendants().First(x => x.HasAttributes && x.FirstAttribute.Value == "RemoteAddress").Value;
 
             //get the SystemTime that it started, with the SystemTime attribute
             Time = DateTime.Parse(doc.Root.Descendants().First(x => x.HasAttributes && x.Attributes().Any(z => z.Name.LocalName == "SystemTime")).Attribute("SystemTime").Value);
+
+
+            IsValid = true;
         }
 
         public static IFailedReqLogItem LoadFailedReq(string file)

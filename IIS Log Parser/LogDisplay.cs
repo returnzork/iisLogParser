@@ -143,7 +143,7 @@ namespace returnzork.IIS_Log_Parser
             output = output.Replace("%date%", item.Time.ToString());
             output = output.Replace("%serverip%", item.ServerIpAddr);
             output = output.Replace("%method%", item.HTTPVerb);
-            output = output.Replace("%path%", item.Uri);
+            output = output.Replace("%path%", item.Url);
             output = output.Replace("%query%", item.Query);
             output = output.Replace("%port%", item.Port.ToString());
             output = output.Replace("%username%", item.Username);

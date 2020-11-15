@@ -27,7 +27,7 @@ namespace returnzork.IIS_Log_Parser
         /// <summary>
         /// Uri accessed on server
         /// </summary>
-        public string Uri { get; set; }
+        public string Url { get; set; }
         /// <summary>
         /// ?
         /// </summary>
@@ -83,7 +83,7 @@ namespace returnzork.IIS_Log_Parser
             this.Time = DateTime.Parse(args[0] + " " + args[1]);
             this.ServerIpAddr = args[2];
             this.HTTPVerb = args[3];
-            this.Uri = args[4];
+            this.Url = args[4];
             this.Query = args[5];
             this.Port = int.Parse(args[6]);
             this.Username = args[7];
@@ -107,7 +107,7 @@ namespace returnzork.IIS_Log_Parser
         {
             string output = "";
 
-            output += Time + " " + ClientIpAddr + " " + HTTPVerb + " " + HTTPStatus + " " + Uri;
+            output += Time + " " + ClientIpAddr + " " + HTTPVerb + " " + HTTPStatus + " " + Url;
 
             return output;
         }
