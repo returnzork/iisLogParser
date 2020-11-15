@@ -20,12 +20,7 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                if (Directory.Exists(file) && Directory.GetFiles(file, "*.xml").Any())
-                {
-                    FailedRequestDisplay frd = new FailedRequestDisplay(file);
-                    frd.Display();
-                }
-                else if((new FileInfo(file)).Extension == ".xml")
+                if((new FileInfo(file)).Extension == ".xml")
                 {
                     Console.WriteLine("Only XML directories are supported");
                 }
@@ -37,19 +32,30 @@ namespace returnzork.IIS_Log_Parser
 
         static void FileWork(string file)
         {
-            List<ILogItem> parsed;
+            List<ILogItem> parsed = null;
             if(File.Exists(file))
             {
                 parsed = ParseLines(ReadFile(file));
             }
             else
             {
-                parsed = LoadDirectory(file);
+                if (Directory.Exists(file) && Directory.GetFiles(file, "*.xml").Any())
+                {
+                    FailedRequestDisplay frd = new FailedRequestDisplay(file);
+                    frd.Display();
+                }
+                else
+                {
+                    parsed = LoadDirectory(file);
+                }
             }
 
-            Console.WriteLine($"There were a total of {parsed.Count} log entries");
-            Logic<ILogItem> l = new Logic<ILogItem>(parsed);
-            l.Run();
+            if (parsed != null)
+            {
+                Console.WriteLine($"There were a total of {parsed.Count} log entries");
+                Logic<ILogItem> l = new Logic<ILogItem>(parsed);
+                l.Run();
+            }
         }
 
 

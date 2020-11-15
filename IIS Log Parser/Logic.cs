@@ -19,6 +19,10 @@ namespace returnzork.IIS_Log_Parser
             {
                 display = new LogDisplay(ili);
             }
+            else if(logs is List<IFailedReqLogItem> frq)
+            {
+                throw new NotImplementedException();
+            }
             else
                 throw new NotImplementedException();
         }
