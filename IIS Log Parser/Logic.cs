@@ -12,14 +12,15 @@ namespace returnzork.IIS_Log_Parser
         private List<T> logs;
         private ILogDisplay display;
 
-        internal Logic(List<T> logs)
+        internal Logic(IEnumerable<ILog> logs)
         {
-            this.logs = logs;
-            if (logs is List<ILogItem> ili)
+            if(logs is IEnumerable<ILogItem> enIli)
             {
+                List<ILogItem> ili = enIli.ToList();
+                this.logs = ili as List<T>;
                 display = new LogDisplay(ili);
             }
-            else if(logs is List<IFailedReqLogItem> frq)
+            else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
                 throw new NotImplementedException();
             }

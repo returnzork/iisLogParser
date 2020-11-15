@@ -32,7 +32,7 @@ namespace returnzork.IIS_Log_Parser
 
         static void FileWork(string file)
         {
-            List<ILogItem> parsed = null;
+            IEnumerable<ILog> parsed = null;
             if(File.Exists(file))
             {
                 parsed = ParseLines(ReadFile(file));
@@ -52,7 +52,7 @@ namespace returnzork.IIS_Log_Parser
 
             if (parsed != null)
             {
-                Console.WriteLine($"There were a total of {parsed.Count} log entries");
+                Console.WriteLine($"There were a total of {parsed.Count()} log entries");
                 Logic<ILogItem> l = new Logic<ILogItem>(parsed);
                 l.Run();
             }
