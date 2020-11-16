@@ -82,9 +82,6 @@ namespace returnzork.IIS_Log_Parser
             {
                 using (StreamReader sr = new StreamReader(file))
                 {
-                    //cast the list to an array so we can use a parallel for loop
-                    var logArray = logs.ToArray();
-
                     while (!sr.EndOfStream)
                     {
                         string line = sr.ReadLine();
@@ -97,23 +94,25 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
+                            //cast the list to an array so we can use a parallel for loop
+                            T[] logArray = logs.ToArray();
                             System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
                             {
-                                if (typeof(T) == typeof(ILogItem))
+                                if(logArray[i] is ILogItem ili)
                                 {
                                     if (logArray[i] != null)
                                     {
-                                        if (res.Contains((logArray[i] as ILogItem).ClientIpAddr))
+                                        if (res.Contains(ili.ClientIpAddr))
                                             logArray[i] = default;
                                     }
                                 }
                                 else
                                     throw new NotImplementedException();
                             });
+
+                            logs = logArray.Where(x => x != null && x.IsValid).ToList();
                         }
                     }
-
-                    logs = logArray.Where(x => x != null && x.IsValid).ToList();
                 }
             }
         }
@@ -130,9 +129,9 @@ namespace returnzork.IIS_Log_Parser
             {
                 for (int i = logs.Count - 1; i >= 0; i--)
                 {
-                    if (typeof(T) == typeof(ILogItem))
+                    if(logs[i] is ILogItem ili)
                     {
-                        if (split.Contains((logs[i] as ILogItem).ClientIpAddr))
+                        if (split.Contains(ili.ClientIpAddr))
                             logs.RemoveAt(i);
                     }
                     else
