@@ -14,11 +14,10 @@ namespace returnzork.IIS_Log_Parser
 
         internal Logic(IEnumerable<ILog> logs)
         {
-            if(logs is IEnumerable<ILogItem> enIli)
+            if(logs is IEnumerable<ILogItem> ili)
             {
-                List<ILogItem> ili = enIli.ToList();
                 this.logs = ili as List<T>;
-                display = new LogDisplay(ili);
+                display = new LogDisplay(ili.ToList());
             }
             else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
