@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
+    enum LogType { INVALID, Log, FailedRequest}
+
     class Program
     {
         static void Main(string[] args)
@@ -33,15 +35,18 @@ namespace returnzork.IIS_Log_Parser
         static void FileWork(string file)
         {
             IEnumerable<ILog> parsed = null;
+            LogType logType = LogType.INVALID;
             if(File.Exists(file))
             {
                 parsed = ParseLines(ReadFile(file));
+                logType = LogType.Log;
             }
             else
             {
                 if (Directory.Exists(file) && Directory.GetFiles(file, "*.xml").Any())
                 {
                     parsed = FailedRequestDisplay.LoadFailedReqLogDir(file);
+                    logType = LogType.FailedRequest;
                     //TODO remove me
                     /*FailedRequestDisplay frd = new FailedRequestDisplay(file);
                     frd.Display();*/
@@ -49,13 +54,20 @@ namespace returnzork.IIS_Log_Parser
                 else
                 {
                     parsed = LoadDirectory(file);
+                    logType = LogType.Log;
                 }
             }
 
             if (parsed != null)
             {
                 Console.WriteLine($"There were a total of {parsed.Count()} log entries");
-                Logic<ILogItem> l = new Logic<ILogItem>(parsed);
+                ILogic l;
+                if (logType == LogType.Log)
+                    l = new Logic<ILogItem>(parsed);
+                else if (logType == LogType.FailedRequest)
+                    l = new Logic<IFailedReqLogItem>(parsed);
+                else
+                    throw new ArgumentException();
                 l.Run();
             }
         }

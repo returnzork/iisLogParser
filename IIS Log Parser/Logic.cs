@@ -11,21 +11,24 @@ namespace returnzork.IIS_Log_Parser
     {
         private List<T> logs;
         private ILogDisplay display;
+        public event EventHandler<LogsChangedEventArgs> OnLogsChanged;
 
         internal Logic(IEnumerable<ILog> logs)
         {
             if(logs is IEnumerable<ILogItem> ili)
             {
-                this.logs = ili as List<T>;
-                display = new LogDisplay(ili.ToList());
+                this.logs = ili.ToList() as List<T>;
+                display = new LogDisplay(this);
             }
             else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
-                this.logs = frq as List<T>;
-                display = new FailedRequestDisplay(frq.ToList());
+                this.logs = frq.ToList() as List<T>;
+                display = new FailedRequestDisplay(this);
             }
             else
                 throw new NotImplementedException();
+
+            LogChanged();
         }
 
         public void Run()
@@ -111,6 +114,7 @@ namespace returnzork.IIS_Log_Parser
                             });
 
                             logs = logArray.Where(x => x != null && x.IsValid).ToList();
+                            LogChanged();
                         }
                     }
                 }
@@ -127,16 +131,23 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
+                bool didRemove = false;
                 for (int i = logs.Count - 1; i >= 0; i--)
                 {
                     if(logs[i] is ILogItem ili)
                     {
                         if (split.Contains(ili.ClientIpAddr))
+                        {
                             logs.RemoveAt(i);
+                            didRemove = true;
+                        }
                     }
                     else
                         throw new NotImplementedException();
                 }
+
+                if (didRemove)
+                    LogChanged();
             }
         }
 
@@ -156,6 +167,8 @@ namespace returnzork.IIS_Log_Parser
                 }
                 else
                     throw new NotImplementedException();
+
+                LogChanged();
             }
         }
 
@@ -171,12 +184,25 @@ namespace returnzork.IIS_Log_Parser
             {
                 if (typeof(T) == typeof(ILogItem))
                 {
-                    //we shouldn't need to reinitialize the Display, as a change to the List should be reflected
                     (logs as List<ILogItem>).AddRange(Program.ParseLines(Program.ReadFile(newFile)));
                 }
                 else
                     throw new NotImplementedException();
+
+                LogChanged();
             }
+        }
+
+
+        private void LogChanged()
+        {
+            Type t = logs.GetType();
+            if (logs is List<ILogItem> lili)
+                OnLogsChanged(this, new LogsChangedEventArgs(lili.ToArray()));
+            else if (logs is List<IFailedReqLogItem> lifrqli)
+                OnLogsChanged(this, new LogsChangedEventArgs(lifrqli.ToArray()));
+            else
+                throw new ArgumentException();
         }
     }
 }

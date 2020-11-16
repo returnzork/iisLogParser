@@ -27,13 +27,19 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
-        public FailedRequestDisplay(List<IFailedReqLogItem> logs)
+        public FailedRequestDisplay(ILogic logic)
         {
-            this.loadedLogs = logs;
-            currentLogFilter = loadedLogs.AsEnumerable();
+            logic.OnLogsChanged += Logic_OnLogsChanged;
         }
 
-
+        private void Logic_OnLogsChanged(object sender, LogsChangedEventArgs e)
+        {
+            if (e.NewLogs is IFailedReqLogItem[] ifrqliA)
+            {
+                this.loadedLogs = ifrqliA.ToList();
+                currentLogFilter = loadedLogs.AsEnumerable();
+            }
+        }
 
         public void ConsumeMenuItem(MenuEntry item)
         {

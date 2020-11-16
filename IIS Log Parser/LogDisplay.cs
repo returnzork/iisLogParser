@@ -13,12 +13,20 @@ namespace returnzork.IIS_Log_Parser
         const string DEFAULTFORMAT = "%date% %ip% %method% %status% %path%";
         string currentFormat = DEFAULTFORMAT;
 
-        internal LogDisplay(List<ILogItem> logs)
+        internal LogDisplay(ILogic logic)
         {
-            this.logs = logs;
+            logic.OnLogsChanged += Logic_OnLogsChanged;
         }
 
-
+        private void Logic_OnLogsChanged(object sender, LogsChangedEventArgs e)
+        {
+            if (e.NewLogs is ILogItem[] iliA)
+            {
+                this.logs = iliA.ToList();
+            }
+            else
+                throw new ArgumentException();
+        }
 
         public void ShowMenu()
         {
