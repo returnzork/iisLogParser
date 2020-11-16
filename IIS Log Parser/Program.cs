@@ -41,8 +41,10 @@ namespace returnzork.IIS_Log_Parser
             {
                 if (Directory.Exists(file) && Directory.GetFiles(file, "*.xml").Any())
                 {
-                    FailedRequestDisplay frd = new FailedRequestDisplay(file);
-                    frd.Display();
+                    parsed = FailedRequestDisplay.LoadFailedReqLogDir(file);
+                    //TODO remove me
+                    /*FailedRequestDisplay frd = new FailedRequestDisplay(file);
+                    frd.Display();*/
                 }
                 else
                 {

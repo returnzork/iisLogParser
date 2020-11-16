@@ -22,7 +22,8 @@ namespace returnzork.IIS_Log_Parser
             }
             else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
-                throw new NotImplementedException();
+                this.logs = frq as List<T>;
+                display = new FailedRequestDisplay(frq.ToList());
             }
             else
                 throw new NotImplementedException();

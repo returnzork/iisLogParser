@@ -33,7 +33,11 @@ namespace returnzork.IIS_Log_Parser
         [Display(Name = "Change display formatting", Order = 7)]
         ChangeDisplayFormat,
         [Display(Name = "Show items matching a path", Order = 8)]
-        ShowByPath
+        ShowByPath,
+
+        //failed req
+        FRQDisplay, FRQResetLogFilter, FRQIgnoreByUrl, FRQIgnoreByUserAgent, FRQIgnoreByIP, FRQIgnoreByHost
+
     }
 
     internal static class Menu

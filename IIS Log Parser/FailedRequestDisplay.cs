@@ -8,75 +8,108 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
-    enum FailedRequestMenuItem
+    internal class FailedRequestDisplay : ILogDisplay
     {
-        NONE, Exit, ResetLogFilter,
-        Display,
-        IgnoreByUrl, IgnoreByUserAgent, IgnoreByIP, IgnoreByHost
-    }
+        List<IFailedReqLogItem> loadedLogs;
+        IEnumerable<IFailedReqLogItem> currentLogFilter;
 
 
-    internal class FailedRequestDisplay
-    {
-        IFailedReqLogItem[] loadedLogs;
-        internal FailedRequestDisplay(string dir)
+        public static IEnumerable<IFailedReqLogItem> LoadFailedReqLogDir(string dir)
         {
             //load all of the xml files
             var files = Directory.GetFiles(dir, "*.xml");
-            loadedLogs = new IFailedReqLogItem[files.Length];
-            for(int i = 0; i < files.Length; i++)
+            for (int i = 0; i < files.Length; i++)
             {
-                loadedLogs[i] = FailedReqLogItem.LoadFailedReq(files[i]);
+                //make sure the file exists, the file could have been deleted since the last iteration happened
+                if (File.Exists(files[i]))
+                    yield return FailedReqLogItem.LoadFailedReq(files[i]);
             }
         }
 
-        internal void Display()
+
+        public FailedRequestDisplay(List<IFailedReqLogItem> logs)
         {
-            IEnumerable<IFailedReqLogItem> currentLogFilter = loadedLogs.AsEnumerable();
-            while (true)
-            {
-                var option = DisplayMenu();
-                switch (option)
-                {
-                    case FailedRequestMenuItem.Exit:
-                        return;
-
-                    case FailedRequestMenuItem.ResetLogFilter:
-                        currentLogFilter = loadedLogs.AsEnumerable();
-                        break;
-
-                    case FailedRequestMenuItem.Display:
-                        DisplayLogs(currentLogFilter);
-                        break;
-
-                    case FailedRequestMenuItem.IgnoreByUrl:
-                        IgnoreByUrl(ref currentLogFilter);
-                        break;
-                    case FailedRequestMenuItem.IgnoreByUserAgent:
-                        IgnoreByUserAgent(ref currentLogFilter);
-                        break;
-
-                    case FailedRequestMenuItem.IgnoreByIP:
-                        IgnoreByIP(ref currentLogFilter);
-                        break;
-
-                    case FailedRequestMenuItem.IgnoreByHost:
-                        IgnoreByHost(ref currentLogFilter);
-                        break;
-                }
-            }
+            this.loadedLogs = logs;
+            currentLogFilter = loadedLogs.AsEnumerable();
         }
 
-        private void DisplayLogs(IEnumerable<IFailedReqLogItem> logs)
+
+
+        public void ConsumeMenuItem(MenuEntry item)
         {
-            foreach(var li in logs)
+            switch (item)
             {
-                Console.WriteLine(li.ClientIpAddr + " - " + li.Time);
-                Console.WriteLine($"\t{li.Url}");
-                Console.WriteLine($"\t{li.UserAgent}");
-                Console.WriteLine($"\t{li.ActionName}");
+                case MenuEntry.Exit:
+                    return;
+
+                case MenuEntry.FRQResetLogFilter:
+                    currentLogFilter = loadedLogs.AsEnumerable();
+                    break;
+
+                case MenuEntry.FRQDisplay:
+                    DisplayLogs(currentLogFilter);
+                    break;
+
+                case MenuEntry.FRQIgnoreByUrl:
+                    IgnoreByUrl(ref currentLogFilter);
+                    break;
+                case MenuEntry.FRQIgnoreByUserAgent:
+                    IgnoreByUserAgent(ref currentLogFilter);
+                    break;
+
+                case MenuEntry.FRQIgnoreByIP:
+                    IgnoreByIP(ref currentLogFilter);
+                    break;
+
+                case MenuEntry.FRQIgnoreByHost:
+                    IgnoreByHost(ref currentLogFilter);
+                    break;
             }
         }
+
+        public MenuEntry GetMenuItem()
+        {
+            if (!int.TryParse(Console.ReadLine(), out int result))
+            {
+                Console.WriteLine("Invalid entry");
+                return MenuEntry.NONE;
+            }
+            switch (result)
+            {
+                case -1:
+                    return MenuEntry.Exit;
+
+                case 0:
+                    return MenuEntry.FRQDisplay;
+
+                case 1:
+                    return MenuEntry.FRQResetLogFilter;
+
+                case 4:
+                    return MenuEntry.FRQIgnoreByUrl;
+                case 44:
+                    return MenuEntry.FRQIgnoreByUserAgent;
+                case 444:
+                    return MenuEntry.FRQIgnoreByIP;
+                case 4444:
+                    return MenuEntry.FRQIgnoreByHost;
+
+                default:
+                    return MenuEntry.NONE;
+            }
+        }
+
+        public void ShowMenu()
+        {
+            Console.WriteLine("-1 - Exit");
+            Console.WriteLine("0 - Display");
+            Console.WriteLine("1 - Reset log filters");
+            Console.WriteLine("4 - Add ignore by url");
+            Console.WriteLine("44 - Add ignore by user agent");
+            Console.WriteLine("444 - Add ignore by IP address");
+            Console.WriteLine("4444 - Add ignore by host");
+        }
+
 
 
         private void IgnoreByUrl(ref IEnumerable<IFailedReqLogItem> logs)
@@ -112,43 +145,14 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
-        private FailedRequestMenuItem DisplayMenu()
+        private void DisplayLogs(IEnumerable<IFailedReqLogItem> logs)
         {
-            Console.WriteLine("-1 - Exit");
-            Console.WriteLine("0 - Display");
-            Console.WriteLine("1 - Reset log filters");
-            Console.WriteLine("4 - Add ignore by url");
-            Console.WriteLine("44 - Add ignore by user agent");
-            Console.WriteLine("444 - Add ignore by IP address");
-            Console.WriteLine("4444 - Add ignore by host");
-
-            if(!int.TryParse(Console.ReadLine(), out int result))
+            foreach (var li in logs)
             {
-                Console.WriteLine("Invalid entry");
-                return FailedRequestMenuItem.NONE;
-            }
-            switch(result)
-            {
-                case -1:
-                    return FailedRequestMenuItem.Exit;
-
-                case 0:
-                    return FailedRequestMenuItem.Display;
-
-                case 1:
-                    return FailedRequestMenuItem.ResetLogFilter;
-
-                case 4:
-                    return FailedRequestMenuItem.IgnoreByUrl;
-                case 44:
-                    return FailedRequestMenuItem.IgnoreByUserAgent;
-                case 444:
-                    return FailedRequestMenuItem.IgnoreByIP;
-                case 4444:
-                    return FailedRequestMenuItem.IgnoreByHost;
-
-                default:
-                    return FailedRequestMenuItem.NONE;
+                Console.WriteLine(li.ClientIpAddr + " - " + li.Time);
+                Console.WriteLine($"\t{li.Url}");
+                Console.WriteLine($"\t{li.UserAgent}");
+                Console.WriteLine($"\t{li.ActionName}");
             }
         }
     }
