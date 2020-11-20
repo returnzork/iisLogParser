@@ -47,9 +47,6 @@ namespace returnzork.IIS_Log_Parser
                 {
                     parsed = FailedRequestDisplay.LoadFailedReqLogDir(file);
                     logType = LogType.FailedRequest;
-                    //TODO remove me
-                    /*FailedRequestDisplay frd = new FailedRequestDisplay(file);
-                    frd.Display();*/
                 }
                 else
                 {
