@@ -11,6 +11,7 @@ namespace returnzork.IIS_Log_Parser
     internal class FailedRequestDisplay : ILogDisplay
     {
         List<IFailedReqLogItem> loadedLogs;
+        [Obsolete]
         IEnumerable<IFailedReqLogItem> currentLogFilter;
 
 
@@ -37,6 +38,7 @@ namespace returnzork.IIS_Log_Parser
             if (e.NewLogs is IFailedReqLogItem[] ifrqliA)
             {
                 this.loadedLogs = ifrqliA.ToList();
+                //TODO removeme when finished
                 currentLogFilter = loadedLogs.AsEnumerable();
             }
         }

@@ -9,26 +9,29 @@ namespace returnzork.IIS_Log_Parser
 {
     internal class Logic<T> : ILogic where T : ILog
     {
-        private List<T> logs;
+        private List<T> allLogs;
+        private IEnumerable<T> filteredLogs;
         private ILogDisplay display;
         public event EventHandler<LogsChangedEventArgs> OnLogsChanged;
 
-        internal Logic(IEnumerable<ILog> logs)
+        internal Logic(in IEnumerable<ILog> logs)
         {
             if(logs is IEnumerable<ILogItem> ili)
             {
-                this.logs = ili.ToList() as List<T>;
+                this.allLogs = ili.ToList() as List<T>;
                 display = new LogDisplay(this);
             }
             else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
-                this.logs = frq.ToList() as List<T>;
+                this.allLogs = frq.ToList() as List<T>;
                 display = new FailedRequestDisplay(this);
             }
             else
                 throw new NotImplementedException();
 
-            LogChanged();
+            this.filteredLogs = this.allLogs;
+
+            LogFilterChanged();
         }
 
         public void Run()
@@ -61,6 +64,11 @@ namespace returnzork.IIS_Log_Parser
                         break;
                     case MenuEntry.GlobalIgnoreFile:
                         AddGlobalIgnoreFile();
+                        break;
+
+                    case MenuEntry.ResetLogFilters:
+                        this.filteredLogs = this.allLogs.AsEnumerable();
+                        LogFilterChanged();
                         break;
 
 
@@ -97,24 +105,28 @@ namespace returnzork.IIS_Log_Parser
                         }
                         else
                         {
-                            //cast the list to an array so we can use a parallel for loop
-                            T[] logArray = logs.ToArray();
-                            System.Threading.Tasks.Parallel.For(0, logArray.Length, (i) =>
+                            int preCount = filteredLogs.Count();
+                            //iterate over each item in the filtered logs, checking if the ClientIpAddr equals an item in the text document
+                            filteredLogs = filteredLogs.Where(x =>
                             {
-                                if(logArray[i] is ILogItem ili)
+                                if (x is ILogItem ili)
                                 {
-                                    if (logArray[i] != null)
+                                    if (ili.IsValid)
                                     {
                                         if (res.Contains(ili.ClientIpAddr))
-                                            logArray[i] = default;
+                                            return false;
+                                        else
+                                            return true;
                                     }
+                                    else
+                                        return false;
                                 }
                                 else
                                     throw new NotImplementedException();
                             });
 
-                            logs = logArray.Where(x => x != null && x.IsValid).ToList();
-                            LogChanged();
+                            if(preCount != filteredLogs.Count())
+                                LogFilterChanged();
                         }
                     }
                 }
@@ -131,23 +143,23 @@ namespace returnzork.IIS_Log_Parser
             }
             else
             {
-                bool didRemove = false;
-                for (int i = logs.Count - 1; i >= 0; i--)
+                int prevCount = filteredLogs.Count();
+                //get all of the logs where the ClientIpAddr is not contained in the 'split' ip addresses to remove
+                filteredLogs = filteredLogs.Where(x =>
                 {
-                    if(logs[i] is ILogItem ili)
+                    if (x is ILogItem ili)
                     {
                         if (split.Contains(ili.ClientIpAddr))
-                        {
-                            logs.RemoveAt(i);
-                            didRemove = true;
-                        }
+                            return false;
                     }
                     else
                         throw new NotImplementedException();
-                }
 
-                if (didRemove)
-                    LogChanged();
+                    return true;
+                });
+
+                if (prevCount != filteredLogs.Count())
+                    LogFilterChanged();
             }
         }
 
@@ -163,12 +175,12 @@ namespace returnzork.IIS_Log_Parser
             {
                 if (typeof(T) == typeof(ILogItem))
                 {
-                    logs = Program.LoadDirectory(dir) as List<T>;
+                    allLogs = Program.LoadDirectory(dir) as List<T>;
                 }
                 else
                     throw new NotImplementedException();
 
-                LogChanged();
+                LogFilterChanged();
             }
         }
 
@@ -184,22 +196,22 @@ namespace returnzork.IIS_Log_Parser
             {
                 if (typeof(T) == typeof(ILogItem))
                 {
-                    (logs as List<ILogItem>).AddRange(Program.ParseLines(Program.ReadFile(newFile)));
+                    (allLogs as List<ILogItem>).AddRange(Program.ParseLines(Program.ReadFile(newFile)));
                 }
                 else
                     throw new NotImplementedException();
 
-                LogChanged();
+                LogFilterChanged();
             }
         }
 
 
-        private void LogChanged()
+        private void LogFilterChanged()
         {
-            Type t = logs.GetType();
-            if (logs is List<ILogItem> lili)
+            Type t = filteredLogs.GetType();
+            if (filteredLogs is IEnumerable<ILogItem> lili)
                 OnLogsChanged(this, new LogsChangedEventArgs(lili.ToArray()));
-            else if (logs is List<IFailedReqLogItem> lifrqli)
+            else if (filteredLogs is IEnumerable<IFailedReqLogItem> lifrqli)
                 OnLogsChanged(this, new LogsChangedEventArgs(lifrqli.ToArray()));
             else
                 throw new ArgumentException();
