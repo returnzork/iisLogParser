@@ -50,10 +50,6 @@ namespace returnzork.IIS_Log_Parser
                 case MenuEntry.Exit:
                     return;
 
-                case MenuEntry.FRQResetLogFilter:
-                    currentLogFilter = loadedLogs.AsEnumerable();
-                    break;
-
                 case MenuEntry.FRQDisplay:
                     DisplayLogs(currentLogFilter);
                     break;
@@ -63,10 +59,6 @@ namespace returnzork.IIS_Log_Parser
                     break;
                 case MenuEntry.FRQIgnoreByUserAgent:
                     IgnoreByUserAgent(ref currentLogFilter);
-                    break;
-
-                case MenuEntry.FRQIgnoreByIP:
-                    IgnoreByIP(ref currentLogFilter);
                     break;
 
                 case MenuEntry.FRQIgnoreByHost:

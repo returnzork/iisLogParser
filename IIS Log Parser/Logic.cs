@@ -60,6 +60,7 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
                     case MenuEntry.GlobalIgnore:
+                    case MenuEntry.FRQIgnoreByIP:
                         AddGlobalIgnore();
                         break;
                     case MenuEntry.GlobalIgnoreFile:
@@ -67,10 +68,10 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
                     case MenuEntry.ResetLogFilters:
+                    case MenuEntry.FRQResetLogFilter:
                         this.filteredLogs = this.allLogs.AsEnumerable();
                         LogFilterChanged();
                         break;
-
 
 
                     default:
@@ -150,6 +151,11 @@ namespace returnzork.IIS_Log_Parser
                     if (x is ILogItem ili)
                     {
                         if (split.Contains(ili.ClientIpAddr))
+                            return false;
+                    }
+                    else if(x is IFailedReqLogItem frqli)
+                    {
+                        if (split.Contains(frqli.ClientIpAddr))
                             return false;
                     }
                     else
