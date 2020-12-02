@@ -73,6 +73,11 @@ namespace returnzork.IIS_Log_Parser
                         LogFilterChanged();
                         break;
 
+                    case MenuEntry.FRQDisplay:
+                    case MenuEntry.DisplayLogs:
+                        display.Display();
+                        break;
+
 
                     default:
                         display.ConsumeMenuItem(entry);

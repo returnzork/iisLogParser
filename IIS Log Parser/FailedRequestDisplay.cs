@@ -145,6 +145,9 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
+
+
+        public void Display() => DisplayLogs(currentLogFilter);
         private void DisplayLogs(IEnumerable<IFailedReqLogItem> logs)
         {
             foreach (var li in logs)

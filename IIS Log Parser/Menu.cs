@@ -36,6 +36,8 @@ namespace returnzork.IIS_Log_Parser
         ShowByPath,
         [Display(Name = "Reset Log Filters", Order = 9)]
         ResetLogFilters,
+        [Display(Name = "Display Logs", Order = 6)]
+        DisplayLogs,
 
         //failed req
         FRQDisplay, FRQResetLogFilter, FRQIgnoreByUrl, FRQIgnoreByUserAgent, FRQIgnoreByIP, FRQIgnoreByHost

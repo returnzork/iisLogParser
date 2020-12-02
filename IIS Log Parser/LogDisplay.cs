@@ -121,6 +121,7 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
+        public void Display() => Display(logs);
         private void Display(IEnumerable<ILogItem> results)
         {
             Console.WriteLine();
