@@ -79,7 +79,7 @@ namespace returnzork.IIS_Log_Parser
                     return MenuEntry.DisplayLogs;
 
                 case 1:
-                    return MenuEntry.FRQResetLogFilter;
+                    return MenuEntry.ResetLogFilters;
 
                 case 4:
                     return MenuEntry.FRQIgnoreByUrl;

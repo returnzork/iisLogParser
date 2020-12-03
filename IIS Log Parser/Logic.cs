@@ -68,7 +68,6 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
                     case MenuEntry.ResetLogFilters:
-                    case MenuEntry.FRQResetLogFilter:
                         this.filteredLogs = this.allLogs.AsEnumerable();
                         LogFilterChanged();
                         break;
