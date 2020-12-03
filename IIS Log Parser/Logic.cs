@@ -60,7 +60,6 @@ namespace returnzork.IIS_Log_Parser
                         break;
 
                     case MenuEntry.GlobalIgnore:
-                    case MenuEntry.FRQIgnoreByIP:
                         AddGlobalIgnore();
                         break;
                     case MenuEntry.GlobalIgnoreFile:

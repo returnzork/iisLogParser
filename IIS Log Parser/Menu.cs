@@ -40,7 +40,7 @@ namespace returnzork.IIS_Log_Parser
         DisplayLogs,
 
         //failed req
-        FRQIgnoreByUrl, FRQIgnoreByUserAgent, FRQIgnoreByIP, FRQIgnoreByHost
+        FRQIgnoreByUrl, FRQIgnoreByUserAgent, FRQIgnoreByHost
 
     }
 

@@ -86,7 +86,7 @@ namespace returnzork.IIS_Log_Parser
                 case 44:
                     return MenuEntry.FRQIgnoreByUserAgent;
                 case 444:
-                    return MenuEntry.FRQIgnoreByIP;
+                    return MenuEntry.GlobalIgnore;
                 case 4444:
                     return MenuEntry.FRQIgnoreByHost;
 
