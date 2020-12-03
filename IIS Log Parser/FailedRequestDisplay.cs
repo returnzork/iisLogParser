@@ -19,12 +19,19 @@ namespace returnzork.IIS_Log_Parser
         {
             //load all of the xml files
             var files = Directory.GetFiles(dir, "*.xml");
-            for (int i = 0; i < files.Length; i++)
+            List<IFailedReqLogItem> logs = new List<IFailedReqLogItem>(files.Length);
+
+            System.Threading.Tasks.Parallel.For(0, files.Length, (i) =>
             {
-                //make sure the file exists, the file could have been deleted since the last iteration happened
                 if (File.Exists(files[i]))
-                    yield return FailedReqLogItem.LoadFailedReq(files[i]);
-            }
+                {
+                    var frqli = FailedReqLogItem.LoadFailedReq(files[i]);
+                    lock (logs)
+                        logs.Add(frqli);
+                }
+            });
+
+            return logs;
         }
 
 
