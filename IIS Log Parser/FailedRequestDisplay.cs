@@ -50,10 +50,6 @@ namespace returnzork.IIS_Log_Parser
                 case MenuEntry.Exit:
                     return;
 
-                case MenuEntry.FRQDisplay:
-                    DisplayLogs(currentLogFilter);
-                    break;
-
                 case MenuEntry.FRQIgnoreByUrl:
                     IgnoreByUrl(ref currentLogFilter);
                     break;
@@ -80,7 +76,7 @@ namespace returnzork.IIS_Log_Parser
                     return MenuEntry.Exit;
 
                 case 0:
-                    return MenuEntry.FRQDisplay;
+                    return MenuEntry.DisplayLogs;
 
                 case 1:
                     return MenuEntry.FRQResetLogFilter;
