@@ -31,7 +31,7 @@ namespace returnzork.IIS_Log_Parser
                 }
             });
 
-            return logs;
+            return logs.OrderBy(x => x.Time);
         }
 
 
