@@ -7,13 +7,35 @@ using System.Linq;
 
 namespace returnzork.IIS_Log_Parser
 {
+    /// <summary>
+    /// Class that holds the code that links the individual log items together
+    /// </summary>
+    /// <typeparam name="T">ILog type of what logs are to be used</typeparam>
     internal class Logic<T> : ILogic where T : ILog
     {
+        /// <summary>
+        /// All unfiltered logs that have been loaded <see cref="filteredLogs"/>
+        /// </summary>
         private List<T> allLogs;
+
+        /// <summary>
+        /// Logs that have been filtered from <see cref="allLogs"/>
+        /// </summary>
         private IEnumerable<T> filteredLogs;
+
+        /// <summary>
+        /// LogDisplay class that is used for displaying the log items
+        /// </summary>
         private ILogDisplay display;
+
+        /// <summary>
+        /// Event that is fired whenever <see cref="filteredLogs"/> is updated
+        /// </summary>
         public event EventHandler<LogsChangedEventArgs> OnLogsChanged;
 
+
+
+        /// <param name="logs">All of the logs files that have been loaded</param>
         internal Logic(in IEnumerable<ILog> logs)
         {
             if(logs is IEnumerable<ILogItem> ili)
@@ -34,6 +56,9 @@ namespace returnzork.IIS_Log_Parser
             LogFilterChanged();
         }
 
+        /// <summary>
+        /// Run the Logic execution code
+        /// </summary>
         public void Run()
         {
             //setup requirements
@@ -84,6 +109,9 @@ namespace returnzork.IIS_Log_Parser
             while (entry != MenuEntry.Exit && !shouldExit);
         }
 
+        /// <summary>
+        /// From a text document, take the specified ip address' from the filtered logs
+        /// </summary>
         private void AddGlobalIgnoreFile()
         {
             Console.WriteLine("Enter file containing [ip, address] to ignore:");
@@ -136,6 +164,9 @@ namespace returnzork.IIS_Log_Parser
             }
         }
 
+        /// <summary>
+        /// From user entry, take the specified ip address (or multiple) from the filtered logs
+        /// </summary>
         private void AddGlobalIgnore()
         {
             Console.WriteLine("Enter [ip, address] to ignore:");
@@ -171,6 +202,9 @@ namespace returnzork.IIS_Log_Parser
             }
         }
 
+        /// <summary>
+        /// Load a new log folder, removing any log files that are already loaded
+        /// </summary>
         private void LoadLogFolder()
         {
             Console.WriteLine("Enter folder to load from");
@@ -192,6 +226,9 @@ namespace returnzork.IIS_Log_Parser
             }
         }
 
+        /// <summary>
+        /// Add a single log file, adding it to the log files already loaded
+        /// </summary>
         private void AddLogFile()
         {
             Console.WriteLine("Enter new log file to add");
@@ -214,6 +251,9 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
+        /// <summary>
+        /// Glue code to interact with <see cref="OnLogsChanged"/>
+        /// </summary>
         private void LogFilterChanged()
         {
             Type t = filteredLogs.GetType();
@@ -225,7 +265,10 @@ namespace returnzork.IIS_Log_Parser
                 throw new ArgumentException();
         }
 
-
+        /// <summary>
+        /// Take the specified items out of the filtered logs
+        /// </summary>
+        /// <param name="item">All of the logs that should be filtered from <see cref="filteredLogs"/></param>
         internal void AddFilteredItem(IEnumerable<T> item)
         {
             int prevCount = filteredLogs.Count();
