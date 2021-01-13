@@ -72,11 +72,13 @@ namespace returnzork.IIS_Log_Parser
 
         //failed req
         FRQIgnoreByUrl, FRQIgnoreByUserAgent, FRQIgnoreByHost
-
     }
 
     internal static class Menu
     {
+        /// <summary>
+        /// Display each item of the menu with their specified entry number
+        /// </summary>
         internal static void DisplayMenu()
         {
             foreach(MenuEntry e in Enum.GetValues(typeof(MenuEntry)))
@@ -85,6 +87,10 @@ namespace returnzork.IIS_Log_Parser
             }
         }
 
+        /// <summary>
+        /// Get a <see cref="MenuEntry"/> of the item that the user specified
+        /// </summary>
+        /// <returns></returns>
         internal static MenuEntry GetMenuEntry()
         {
             //check the user put a number in
@@ -109,18 +115,34 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
+        /// <summary>
+        /// Get the display name of a <see cref="MenuEntry"/> (ex <seealso cref="MenuEntry.DisplayLogs"/> -> "Display Logs")
+        /// </summary>
+        /// <param name="me">MenuEntry to convert to display name</param>
+        /// <returns>Display name specified in <see cref="MenuEntry"/> attribute</returns>
         public static string GetDisplayName(this MenuEntry me)
         {
+            //get the attribute that holds the display name
             var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+
+            //if no attribute is specified, return the item with its default ToString implementation. Otherwise return the name that was specified
             if (attribute == null)
                 return me.ToString();
             else
                 return attribute.Name;
         }
 
+        /// <summary>
+        /// Get the order numbering of a <see cref="MenuEntry"/>
+        /// </summary>
+        /// <param name="me">MenuEntry to get order number of</param>
+        /// <returns>Number specified in <see cref="MenuEntry"/> attribute</returns>
         public static int GetOrder(this MenuEntry me)
         {
+            //get the attribute that holds the 
             var attribute = typeof(MenuEntry).GetField(me.ToString()).GetCustomAttribute<DisplayAttribute>();
+            
+            //if no attribute is specified, return an unsuable value of Int32.MinValue. Otherwise return the order that was specified
             if (attribute == null)
                 return Int32.MinValue;
             else
