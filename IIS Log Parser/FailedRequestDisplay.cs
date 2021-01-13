@@ -11,8 +11,7 @@ namespace returnzork.IIS_Log_Parser
     internal class FailedRequestDisplay : ILogDisplay
     {
         List<IFailedReqLogItem> loadedLogs;
-        [Obsolete]
-        IEnumerable<IFailedReqLogItem> currentLogFilter;
+        Logic<IFailedReqLogItem> logic;
 
 
         public static IEnumerable<IFailedReqLogItem> LoadFailedReqLogDir(string dir)
@@ -35,8 +34,9 @@ namespace returnzork.IIS_Log_Parser
         }
 
 
-        public FailedRequestDisplay(ILogic logic)
+        public FailedRequestDisplay(Logic<IFailedReqLogItem> logic)
         {
+            this.logic = logic;
             logic.OnLogsChanged += Logic_OnLogsChanged;
         }
 
@@ -45,8 +45,6 @@ namespace returnzork.IIS_Log_Parser
             if (e.NewLogs is IFailedReqLogItem[] ifrqliA)
             {
                 this.loadedLogs = ifrqliA.ToList();
-                //TODO removeme when finished
-                currentLogFilter = loadedLogs.AsEnumerable();
             }
         }
 
@@ -58,14 +56,14 @@ namespace returnzork.IIS_Log_Parser
                     return;
 
                 case MenuEntry.FRQIgnoreByUrl:
-                    IgnoreByUrl(ref currentLogFilter);
+                    IgnoreByUrl();
                     break;
                 case MenuEntry.FRQIgnoreByUserAgent:
-                    IgnoreByUserAgent(ref currentLogFilter);
+                    IgnoreByUserAgent();
                     break;
 
                 case MenuEntry.FRQIgnoreByHost:
-                    IgnoreByHost(ref currentLogFilter);
+                    IgnoreByHost();
                     break;
             }
         }
@@ -115,45 +113,37 @@ namespace returnzork.IIS_Log_Parser
 
 
 
-        private void IgnoreByUrl(ref IEnumerable<IFailedReqLogItem> logs)
+        private void IgnoreByUrl()
         {
             Console.WriteLine("Enter url to ignore: ");
             string url = Console.ReadLine();
 
-            logs = logs.Where(x => x.Url != url);
+            var toFilter = loadedLogs.Where(x => x.Url == url);
+            logic.AddFilteredItem(toFilter);
         }
 
-        private void IgnoreByUserAgent(ref IEnumerable<IFailedReqLogItem> logs)
+        private void IgnoreByUserAgent()
         {
             Console.WriteLine("Enter user agent to ignore: ");
             string agent = Console.ReadLine();
 
-            logs = logs.Where(x => x.UserAgent != agent);
+            var toFilter = loadedLogs.Where(x => x.UserAgent == agent);
+            logic.AddFilteredItem(toFilter);
         }
 
-        private void IgnoreByIP(ref IEnumerable<IFailedReqLogItem> logs)
-        {
-            Console.WriteLine("Enter IP address to ignore: ");
-            string ip = Console.ReadLine();
-
-            logs = logs.Where(x => x.ClientIpAddr != ip);
-        }
-
-        private void IgnoreByHost(ref IEnumerable<IFailedReqLogItem> logs)
+        private void IgnoreByHost()
         {
             Console.WriteLine("Enter host to ignore: ");
             string host = Console.ReadLine();
 
-            logs = logs.Where(x => x.Host != host);
+            var toFilter = loadedLogs.Where(x => x.Host == host);
+            logic.AddFilteredItem(toFilter);
         }
 
 
-
-
-        public void Display() => DisplayLogs(currentLogFilter);
-        private void DisplayLogs(IEnumerable<IFailedReqLogItem> logs)
+        public void Display()
         {
-            foreach (var li in logs)
+            foreach (var li in this.loadedLogs)
             {
                 Console.WriteLine(li.ClientIpAddr + " - " + li.Time);
                 Console.WriteLine($"\t{li.Url}");

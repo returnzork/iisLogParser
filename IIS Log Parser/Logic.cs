@@ -24,7 +24,7 @@ namespace returnzork.IIS_Log_Parser
             else if(logs is IEnumerable<IFailedReqLogItem> frq)
             {
                 this.allLogs = frq.ToList() as List<T>;
-                display = new FailedRequestDisplay(this);
+                display = new FailedRequestDisplay(this as Logic<IFailedReqLogItem>);
             }
             else
                 throw new NotImplementedException();
@@ -223,6 +223,17 @@ namespace returnzork.IIS_Log_Parser
                 OnLogsChanged(this, new LogsChangedEventArgs(lifrqli.ToArray()));
             else
                 throw new ArgumentException();
+        }
+
+
+        internal void AddFilteredItem(IEnumerable<T> item)
+        {
+            int prevCount = filteredLogs.Count();
+
+            filteredLogs = filteredLogs.Where(x => item.Contains(x) == false);
+
+            if (prevCount != filteredLogs.Count())
+                LogFilterChanged();
         }
     }
 }
